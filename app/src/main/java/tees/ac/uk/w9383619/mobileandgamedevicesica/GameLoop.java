@@ -6,17 +6,20 @@ import android.view.SurfaceHolder;
 
 import java.util.Observer;
 
-public class GameLoop extends Thread {
-    private boolean isRunning = false;
+public class GameLoop extends Thread
+{
     private SurfaceHolder surfaceHolder;
     private Game game;
+
+    private boolean isRunning = false;
     private double averageUPS;
     private double averageFPS;
-    private static final double MAX_UPS = 30;
-    private static final double UPS_PERIOD = (1E-3/MAX_UPS);
 
+    private static final double MAX_UPS = 60;
+    private static final double UPS_PERIOD = 1E+3/MAX_UPS;
 
-    public GameLoop(Game game, SurfaceHolder surfaceHolder) {
+    public GameLoop(Game game, SurfaceHolder surfaceHolder)
+    {
         this.surfaceHolder = surfaceHolder;
         this.game = game;
     }
@@ -29,13 +32,15 @@ public class GameLoop extends Thread {
         return averageFPS;
     }
 
-    public void startLoop() {
+    public void startLoop()
+    {
         isRunning = true;
         start();
     }
 
     @Override
-    public void run() {
+    public void run()
+    {
         super.run();
 
         int updateCount = 0;
@@ -72,9 +77,12 @@ public class GameLoop extends Thread {
             sleepTime = (long) (updateCount * UPS_PERIOD - elapsedTime);
             if(sleepTime > 0)
             {
-                try {
+                try
+                {
                     sleep(sleepTime);
-                } catch (InterruptedException e) {
+                }
+                catch (InterruptedException e)
+                {
                     e.printStackTrace();
                 }
             }
