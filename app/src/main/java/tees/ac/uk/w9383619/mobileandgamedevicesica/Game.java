@@ -21,7 +21,7 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         gameLoop = new GameLoop(this, surfaceHolder);
 
-        player = new Player()
+        player = new Player();
 
         setFocusable(true);
     }
