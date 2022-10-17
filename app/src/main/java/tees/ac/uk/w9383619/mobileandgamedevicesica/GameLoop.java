@@ -1,10 +1,7 @@
 package tees.ac.uk.w9383619.mobileandgamedevicesica;
 
 import android.graphics.Canvas;
-import android.view.Surface;
 import android.view.SurfaceHolder;
-
-import java.util.Observer;
 
 public class GameLoop extends Thread
 {
@@ -12,11 +9,11 @@ public class GameLoop extends Thread
     private Game game;
 
     private boolean isRunning = false;
-    private double averageUPS;
-    private double averageFPS;
+    private double averageUpdates;
+    private double averageFrames;
 
-    private static final double MAX_UPS = 60;
-    private static final double UPS_PERIOD = 1E+3/MAX_UPS;
+    private static final double MAX_UPDATES = 60;
+    private static final double UPDATE_PERIOD = 1E+3/ MAX_UPDATES;
 
     public GameLoop(Game game, SurfaceHolder surfaceHolder)
     {
@@ -24,12 +21,12 @@ public class GameLoop extends Thread
         this.game = game;
     }
 
-    public double getAverageUPS() {
-        return averageUPS;
+    public double getAverageUpdates() {
+        return averageUpdates;
     }
 
-    public double getAverageFPS() {
-        return averageFPS;
+    public double getAverageFrames() {
+        return averageFrames;
     }
 
     public void startLoop()
@@ -74,7 +71,7 @@ public class GameLoop extends Thread
             }
 
             elapsedTime = System.currentTimeMillis() - startTime;
-            sleepTime = (long) (updateCount * UPS_PERIOD - elapsedTime);
+            sleepTime = (long) (updateCount * UPDATE_PERIOD - elapsedTime);
             if(sleepTime > 0)
             {
                 try
@@ -86,18 +83,18 @@ public class GameLoop extends Thread
                     e.printStackTrace();
                 }
             }
-            while (sleepTime < 0 && updateCount < MAX_UPS-1)
+            while (sleepTime < 0 && updateCount < MAX_UPDATES -1)
             {
                 game.update();
                 updateCount++;
                 elapsedTime = System.currentTimeMillis() - startTime;
-                sleepTime = (long) (updateCount * UPS_PERIOD - elapsedTime);
+                sleepTime = (long) (updateCount * UPDATE_PERIOD - elapsedTime);
             }
             elapsedTime = System.currentTimeMillis() - startTime;
             if(elapsedTime >= 1000)
             {
-                averageUPS = updateCount / (1E-3 * elapsedTime);
-                averageFPS = frameCount / (1E-3 * elapsedTime);
+                averageUpdates = updateCount / (1E-3 * elapsedTime);
+                averageFrames = frameCount / (1E-3 * elapsedTime);
                 updateCount =0;
                 frameCount =0;
                 startTime = System.currentTimeMillis();
