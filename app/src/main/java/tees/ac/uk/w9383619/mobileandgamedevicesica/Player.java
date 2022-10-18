@@ -19,15 +19,18 @@ public class Player
     private double velocityX;
     private double velocityY;
     private static final double MAX_SPEED = PIXELS_PER_SECOND/GameLoop.MAX_UPDATES;
-    Bitmap frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8;
-    int width, height, frameCounter = 0;
+    Bitmap frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8, idleFrame1, idleFrame2, idleFrame3, idleFrame4, idleFrame5, idleFrame6;
+    int frameCounter =0;
+    int idleFrameCounter =0;
+    public boolean moving = false;
+    public boolean idle = true;
+
     public Player(Context context, double posX, double posY, double radius, Resources res)
     {
         this.posX = posX;
         this.posY = posY;
         this.radius = radius;
-        //width = frame1.getWidth();
-        //height = frame1.getHeight();
+
 
         frame1 = BitmapFactory.decodeResource(res, R.drawable.tile000);
         frame2 = BitmapFactory.decodeResource(res, R.drawable.tile001);
@@ -37,6 +40,12 @@ public class Player
         frame6 = BitmapFactory.decodeResource(res, R.drawable.tile005);
         frame7 = BitmapFactory.decodeResource(res, R.drawable.tile006);
         frame8 = BitmapFactory.decodeResource(res, R.drawable.tile007);
+        idleFrame1 = BitmapFactory.decodeResource(res, R.drawable.idle1);
+        idleFrame2 = BitmapFactory.decodeResource(res, R.drawable.idle2);
+        idleFrame3 = BitmapFactory.decodeResource(res, R.drawable.idle3);
+        idleFrame4 = BitmapFactory.decodeResource(res, R.drawable.idle4);
+        idleFrame5 = BitmapFactory.decodeResource(res, R.drawable.idle5);
+        idleFrame6 = BitmapFactory.decodeResource(res, R.drawable.idle6);
 
         frame1 = Bitmap.createScaledBitmap(frame1, 128, 192, false);
         frame2 = Bitmap.createScaledBitmap(frame2, 128, 192, false);
@@ -47,6 +56,15 @@ public class Player
         frame7 = Bitmap.createScaledBitmap(frame7, 128, 192, false);
         frame8 = Bitmap.createScaledBitmap(frame8, 128, 192, false);
 
+
+
+        idleFrame1 = Bitmap.createScaledBitmap(idleFrame1, 128, 192, false);
+        idleFrame2 = Bitmap.createScaledBitmap(idleFrame2, 128, 192, false);
+        idleFrame3 = Bitmap.createScaledBitmap(idleFrame3, 128, 192, false);
+        idleFrame4 = Bitmap.createScaledBitmap(idleFrame4, 128, 192, false);
+        idleFrame5 = Bitmap.createScaledBitmap(idleFrame5, 128, 192, false);
+        idleFrame6 = Bitmap.createScaledBitmap(idleFrame6, 128, 192, false);
+
         paint = new Paint();
         int colour = ContextCompat.getColor(context, R.color.player);
         paint.setColor(colour);
@@ -54,42 +72,80 @@ public class Player
 
     public void draw(Canvas canvas)
     {
-        canvas.drawBitmap(getFrame(), (float) posX, (float) posY, paint);
-    }
+        if(getIsMoving())
+        {
+            canvas.drawBitmap(getWalkFrame(), (float) posX, (float) posY, paint);
+        }
+        else
+        {
+            canvas.drawBitmap(getIdleFrame(), (float) posX, (float) posY, paint);
+        }
 
-    private Bitmap getFrame()
+
+    }
+    private Bitmap getIdleFrame()
     {
-        if (frameCounter ==0)
+        if (idleFrameCounter == 0 && getIsIdle() == true)
+        {
+            idleFrameCounter++;
+            return idleFrame2;
+        }
+        if (idleFrameCounter ==1 && getIsIdle() == true)
+        {
+            idleFrameCounter++;
+            return idleFrame3;
+        }
+        if (idleFrameCounter ==2 && getIsIdle() == true)
+        {
+            idleFrameCounter++;
+            return idleFrame4;
+        }
+        if (idleFrameCounter ==3 && getIsIdle() == true)
+        {
+            idleFrameCounter++;
+            return idleFrame5;
+        }
+        if (idleFrameCounter ==4 && getIsIdle() == true)
+        {
+            idleFrameCounter++;
+            return idleFrame6;
+        }
+        idleFrameCounter-=4;
+        return idleFrame1;
+    }
+    private Bitmap getWalkFrame()
+    {
+        if (frameCounter ==0 && getIsMoving() == true)
         {
             frameCounter++;
             return frame2;
         }
-        if (frameCounter ==1)
+        if (frameCounter ==1 && getIsMoving() == true)
         {
             frameCounter++;
             return frame3;
         }
-        if (frameCounter ==2)
+        if (frameCounter ==2 && getIsMoving() == true)
         {
             frameCounter++;
             return frame4;
         }
-        if (frameCounter ==3)
+        if (frameCounter ==3 && getIsMoving() == true)
         {
             frameCounter++;
             return frame5;
         }
-        if (frameCounter ==4)
+        if (frameCounter ==4 && getIsMoving() == true)
         {
             frameCounter++;
             return frame6;
         }
-        if (frameCounter ==5)
+        if (frameCounter ==5 && getIsMoving() == true)
         {
             frameCounter++;
             return frame7;
         }
-        if (frameCounter ==6)
+        if (frameCounter ==6 && getIsMoving() == true)
         {
             frameCounter++;
             return frame8;
@@ -99,6 +155,8 @@ public class Player
 
 
     }
+
+
 
     public void update(Joystick joystick)
     {
@@ -113,4 +171,20 @@ public class Player
         this.posX = posX;
         this.posY = posY;
     }
+
+    public void isMoving(boolean moving) {
+        this.moving = moving;
+
+    }
+
+    public void isIdle(boolean idle)
+    {
+        this.idle = idle;
+    }
+
+    public boolean getIsMoving()
+    {
+        return moving;
+    }
+    public boolean getIsIdle() {return  idle;}
 }
