@@ -25,7 +25,7 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         joystick = new Joystick(100, 700, 75, 30);
         gameLoop = new GameLoop(this, surfaceHolder);
 
-        player = new Player(getContext(), 500, 500, 30);
+        player = new Player(getContext(), 500, 500, 30, getResources());
 
         setFocusable(true);
     }
