@@ -18,6 +18,8 @@
     private Paint innerPaint;
     private double centreToTouchDistance;
         private boolean isPressed;
+        private double actuatorX;
+        private double actuatorY;
 
         public Joystick(int centrePosX, int centrePosY, int outerCircleRadius, int innerCircleRadius)
     {
@@ -43,9 +45,16 @@
         canvas.drawCircle(innerCirclePosX, innerCirclePosY, innerCircleRadius, innerPaint);
     }
 
-    public void update() {
+    public void update()
+    {
+        updateInnerPos();
     }
 
+        private void updateInnerPos()
+        {
+            innerCirclePosX = (int) (outerCirclePosX + actuatorX*outerCircleRadius);
+            innerCirclePosY = (int) (outerCirclePosY + actuatorY*outerCircleRadius);
+        }
         public void setIsPressed(boolean isPressed) {
             this.isPressed = isPressed;
         }
@@ -60,10 +69,34 @@
             return isPressed;
         }
 
-        public void setActuator(double x, double y) {
+        public void setActuator(double touchPosX, double touchPosY) {
+            double deltaX = touchPosX - outerCirclePosX;
+            double deltaY = touchPosY - outerCirclePosY;
+            double deltaDistance = Math.sqrt((Math.pow(deltaX,2) + Math.pow(deltaY,2)));
+
+            if(deltaDistance < outerCircleRadius)
+            {
+                actuatorX = deltaX/outerCircleRadius;
+                actuatorY = deltaY/outerCircleRadius;
+            }
+            else
+            {
+                actuatorX = deltaX/deltaDistance;
+                actuatorY = deltaY/deltaDistance;
+            }
         }
 
-        public void resetActuator() {
 
+        public void resetActuator()
+        {
+            actuatorX = 0;
+            actuatorY = 0;
+        }
+
+        public double getActuatorX() {
+            return actuatorX;
+        }
+        public double getActuatorY() {
+            return actuatorY;
         }
     }

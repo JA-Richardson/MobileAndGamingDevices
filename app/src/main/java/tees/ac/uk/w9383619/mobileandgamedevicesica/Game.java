@@ -22,7 +22,7 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         //Gets surafce holder and adds the callback
         SurfaceHolder surfaceHolder = getHolder();
         surfaceHolder.addCallback(this);
-        joystick = new Joystick(200, 500, 50, 25);
+        joystick = new Joystick(100, 700, 75, 30);
         gameLoop = new GameLoop(this, surfaceHolder);
 
         player = new Player(getContext(), 500, 500, 30);
@@ -102,7 +102,7 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
     public void update()
     {
         joystick.update();
-        player.update();
+        player.update(joystick);
     }
 }
 
