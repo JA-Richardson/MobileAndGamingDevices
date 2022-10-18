@@ -7,11 +7,9 @@ public class GameLoop extends Thread
 {
     private SurfaceHolder surfaceHolder;
     private Game game;
-
     private boolean isRunning = false;
     private double averageUpdates;
     private double averageFrames;
-
     private static final double MAX_UPDATES = 60;
     private static final double UPDATE_PERIOD = 1E+3/ MAX_UPDATES;
 

@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat;
 
 class Game extends SurfaceView implements SurfaceHolder.Callback {
     private final Player player;
+    private final Joystick joystick;
     private GameLoop gameLoop;
 
 
@@ -21,7 +22,7 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         //Gets surafce holder and adds the callback
         SurfaceHolder surfaceHolder = getHolder();
         surfaceHolder.addCallback(this);
-
+        joystick = new Joystick(200, 500, 50, 25);
         gameLoop = new GameLoop(this, surfaceHolder);
 
         player = new Player(getContext(), 500, 500, 30);
@@ -35,10 +36,20 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         switch(event.getAction())
         {
             case MotionEvent.ACTION_DOWN:
-                player.setPosition((double)event.getX(), (double)event.getY());
+                    if(joystick.isPressed((double)event.getX(), (double)event.getY()));
+            {
+                joystick.setIsPressed(true);
+            }
                 return true;
             case MotionEvent.ACTION_MOVE:
-                player.setPosition((double)event.getX(), (double)event.getY());
+                if(joystick.getIsPressed())
+                {
+                    joystick.setActuator((double)event.getX(), (double)event.getY());
+                }
+                return true;
+            case MotionEvent.ACTION_UP:
+                joystick.setIsPressed(false);
+                joystick.resetActuator();
                 return true;
         }
         return super.onTouchEvent(event);
@@ -62,14 +73,14 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
-        drawUPS(canvas);
-        drawFPS(canvas);
-
+        drawUpdates(canvas);
+        drawFrames(canvas);
+        joystick.draw(canvas);
         player.draw(canvas);
 
     }
 
-    public void drawUPS(Canvas canvas)
+    public void drawUpdates(Canvas canvas)
     {
         String averageUpdates = Double.toString(gameLoop.getAverageUpdates());
         Paint paint = new Paint();
@@ -79,7 +90,7 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         canvas.drawText("Updates: " + averageUpdates, 100, 100, paint);
     }
 
-    public void drawFPS(Canvas canvas)
+    public void drawFrames(Canvas canvas)
     {
         String averageFrames = Double.toString(gameLoop.getAverageFrames());
         Paint paint = new Paint();
@@ -90,6 +101,7 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
     }
     public void update()
     {
+        joystick.update();
         player.update();
     }
 }
