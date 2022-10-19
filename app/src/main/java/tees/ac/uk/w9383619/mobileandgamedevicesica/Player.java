@@ -19,18 +19,21 @@ public class Player
     private double velocityX;
     private double velocityY;
     private static final double MAX_SPEED = PIXELS_PER_SECOND/GameLoop.MAX_UPDATES;
-    Bitmap frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8, idleFrame1, idleFrame2, idleFrame3, idleFrame4, idleFrame5, idleFrame6;
+    Bitmap frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8,
+            idleFrame1, idleFrame2, idleFrame3, idleFrame4, idleFrame5, idleFrame6;
     int frameCounter =0;
     int idleFrameCounter =0;
     public boolean moving = false;
     public boolean idle = true;
+    private long startTime;
+    private long elapsedTime;
 
     public Player(Context context, double posX, double posY, double radius, Resources res)
     {
         this.posX = posX;
         this.posY = posY;
         this.radius = radius;
-
+        startTime = System.currentTimeMillis();
 
         frame1 = BitmapFactory.decodeResource(res, R.drawable.tile000);
         frame2 = BitmapFactory.decodeResource(res, R.drawable.tile001);
@@ -40,6 +43,7 @@ public class Player
         frame6 = BitmapFactory.decodeResource(res, R.drawable.tile005);
         frame7 = BitmapFactory.decodeResource(res, R.drawable.tile006);
         frame8 = BitmapFactory.decodeResource(res, R.drawable.tile007);
+
         idleFrame1 = BitmapFactory.decodeResource(res, R.drawable.idle1);
         idleFrame2 = BitmapFactory.decodeResource(res, R.drawable.idle2);
         idleFrame3 = BitmapFactory.decodeResource(res, R.drawable.idle3);
@@ -47,29 +51,26 @@ public class Player
         idleFrame5 = BitmapFactory.decodeResource(res, R.drawable.idle5);
         idleFrame6 = BitmapFactory.decodeResource(res, R.drawable.idle6);
 
-        frame1 = Bitmap.createScaledBitmap(frame1, 128, 192, false);
-        frame2 = Bitmap.createScaledBitmap(frame2, 128, 192, false);
-        frame3 = Bitmap.createScaledBitmap(frame3, 128, 192, false);
-        frame4 = Bitmap.createScaledBitmap(frame4, 128, 192, false);
-        frame5 = Bitmap.createScaledBitmap(frame5, 128, 192, false);
-        frame6 = Bitmap.createScaledBitmap(frame6, 128, 192, false);
-        frame7 = Bitmap.createScaledBitmap(frame7, 128, 192, false);
-        frame8 = Bitmap.createScaledBitmap(frame8, 128, 192, false);
+        frame1 = Bitmap.createScaledBitmap(frame1, 192, 288, false);
+        frame2 = Bitmap.createScaledBitmap(frame2, 192, 288, false);
+        frame3 = Bitmap.createScaledBitmap(frame3, 192, 288, false);
+        frame4 = Bitmap.createScaledBitmap(frame4, 192, 288, false);
+        frame5 = Bitmap.createScaledBitmap(frame5, 192, 288, false);
+        frame6 = Bitmap.createScaledBitmap(frame6, 192, 288, false);
+        frame7 = Bitmap.createScaledBitmap(frame7, 192, 288, false);
+        frame8 = Bitmap.createScaledBitmap(frame8, 192, 288, false);
 
-
-
-        idleFrame1 = Bitmap.createScaledBitmap(idleFrame1, 128, 192, false);
-        idleFrame2 = Bitmap.createScaledBitmap(idleFrame2, 128, 192, false);
-        idleFrame3 = Bitmap.createScaledBitmap(idleFrame3, 128, 192, false);
-        idleFrame4 = Bitmap.createScaledBitmap(idleFrame4, 128, 192, false);
-        idleFrame5 = Bitmap.createScaledBitmap(idleFrame5, 128, 192, false);
-        idleFrame6 = Bitmap.createScaledBitmap(idleFrame6, 128, 192, false);
+        idleFrame1 = Bitmap.createScaledBitmap(idleFrame1, 192, 288, false);
+        idleFrame2 = Bitmap.createScaledBitmap(idleFrame2, 192, 288, false);
+        idleFrame3 = Bitmap.createScaledBitmap(idleFrame3, 192, 288, false);
+        idleFrame4 = Bitmap.createScaledBitmap(idleFrame4, 192, 288, false);
+        idleFrame5 = Bitmap.createScaledBitmap(idleFrame5, 192, 288, false);
+        idleFrame6 = Bitmap.createScaledBitmap(idleFrame6, 192, 288, false);
 
         paint = new Paint();
         int colour = ContextCompat.getColor(context, R.color.player);
         paint.setColor(colour);
     }
-
     public void draw(Canvas canvas)
     {
         if(getIsMoving())
@@ -85,29 +86,36 @@ public class Player
     }
     private Bitmap getIdleFrame()
     {
+
+        elapsedTime = System.currentTimeMillis() - startTime;
+        if(elapsedTime >=120)
+        {
+            idleFrameCounter+=1;
+            startTime = System.currentTimeMillis();
+        }
         if (idleFrameCounter == 0 && getIsIdle() == true)
         {
-            idleFrameCounter++;
+            //idleFrameCounter++;
             return idleFrame2;
         }
         if (idleFrameCounter ==1 && getIsIdle() == true)
         {
-            idleFrameCounter++;
+            //idleFrameCounter++;
             return idleFrame3;
         }
         if (idleFrameCounter ==2 && getIsIdle() == true)
         {
-            idleFrameCounter++;
+            //idleFrameCounter++;
             return idleFrame4;
         }
         if (idleFrameCounter ==3 && getIsIdle() == true)
         {
-            idleFrameCounter++;
+            //idleFrameCounter++;
             return idleFrame5;
         }
         if (idleFrameCounter ==4 && getIsIdle() == true)
         {
-            idleFrameCounter++;
+            //idleFrameCounter++;
             return idleFrame6;
         }
         idleFrameCounter-=4;
@@ -155,9 +163,6 @@ public class Player
 
 
     }
-
-
-
     public void update(Joystick joystick)
     {
         velocityX = joystick.getActuatorX()*MAX_SPEED;
@@ -165,26 +170,19 @@ public class Player
         posX += velocityX;
         posY += velocityY;
     }
-
     public void setPosition(double posX, double posY)
     {
         this.posX = posX;
         this.posY = posY;
     }
-
-    public void isMoving(boolean moving) {
-        this.moving = moving;
-
-    }
-
+    public void isMoving(boolean moving) { this.moving = moving; }
     public void isIdle(boolean idle)
     {
         this.idle = idle;
     }
-
     public boolean getIsMoving()
     {
         return moving;
     }
-    public boolean getIsIdle() {return  idle;}
+    public boolean getIsIdle() { return  idle; }
 }

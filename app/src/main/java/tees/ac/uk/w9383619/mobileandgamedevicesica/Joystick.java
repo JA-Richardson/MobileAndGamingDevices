@@ -32,10 +32,12 @@
         this.innerCircleRadius = innerCircleRadius;
 
         outerPaint = new Paint();
-        outerPaint.setColor(Color.YELLOW);
+        outerPaint.setColor(Color.GRAY);
         outerPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        outerPaint.setAlpha(60);
+
         innerPaint = new Paint();
-        innerPaint.setColor(Color.BLUE);
+        innerPaint.setColor(Color.DKGRAY);
         innerPaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
     }
