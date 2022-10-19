@@ -14,10 +14,7 @@ public class Player
     private static final double PIXELS_PER_SECOND = 200;
     private double posX;
     private double posY;
-    private double radius;
-    private Paint paint;
-    private double velocityX;
-    private double velocityY;
+    private final Paint paint;
     private static final double MAX_SPEED = PIXELS_PER_SECOND/GameLoop.MAX_UPDATES;
     Bitmap frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8,
             idleFrame1, idleFrame2, idleFrame3, idleFrame4, idleFrame5, idleFrame6;
@@ -26,13 +23,11 @@ public class Player
     public boolean moving = false;
     public boolean idle = true;
     private long startTime;
-    private long elapsedTime;
 
     public Player(Context context, double posX, double posY, double radius, Resources res)
     {
         this.posX = posX;
         this.posY = posY;
-        this.radius = radius;
         startTime = System.currentTimeMillis();
 
         frame1 = BitmapFactory.decodeResource(res, R.drawable.tile000);
@@ -87,35 +82,30 @@ public class Player
     private Bitmap getIdleFrame()
     {
 
-        elapsedTime = System.currentTimeMillis() - startTime;
+        long elapsedTime = System.currentTimeMillis() - startTime;
         if(elapsedTime >=120)
         {
             idleFrameCounter+=1;
             startTime = System.currentTimeMillis();
         }
-        if (idleFrameCounter == 0 && getIsIdle() == true)
+        if (idleFrameCounter == 0 && getIsIdle())
         {
-            //idleFrameCounter++;
             return idleFrame2;
         }
-        if (idleFrameCounter ==1 && getIsIdle() == true)
+        if (idleFrameCounter ==1 && getIsIdle())
         {
-            //idleFrameCounter++;
             return idleFrame3;
         }
-        if (idleFrameCounter ==2 && getIsIdle() == true)
+        if (idleFrameCounter ==2 && getIsIdle())
         {
-            //idleFrameCounter++;
             return idleFrame4;
         }
-        if (idleFrameCounter ==3 && getIsIdle() == true)
+        if (idleFrameCounter ==3 && getIsIdle())
         {
-            //idleFrameCounter++;
             return idleFrame5;
         }
-        if (idleFrameCounter ==4 && getIsIdle() == true)
+        if (idleFrameCounter ==4 && getIsIdle())
         {
-            //idleFrameCounter++;
             return idleFrame6;
         }
         idleFrameCounter-=4;
@@ -123,37 +113,37 @@ public class Player
     }
     private Bitmap getWalkFrame()
     {
-        if (frameCounter ==0 && getIsMoving() == true)
+        if (frameCounter ==0 && getIsMoving())
         {
             frameCounter++;
             return frame2;
         }
-        if (frameCounter ==1 && getIsMoving() == true)
+        if (frameCounter ==1 && getIsMoving())
         {
             frameCounter++;
             return frame3;
         }
-        if (frameCounter ==2 && getIsMoving() == true)
+        if (frameCounter ==2 && getIsMoving())
         {
             frameCounter++;
             return frame4;
         }
-        if (frameCounter ==3 && getIsMoving() == true)
+        if (frameCounter ==3 && getIsMoving())
         {
             frameCounter++;
             return frame5;
         }
-        if (frameCounter ==4 && getIsMoving() == true)
+        if (frameCounter ==4 && getIsMoving())
         {
             frameCounter++;
             return frame6;
         }
-        if (frameCounter ==5 && getIsMoving() == true)
+        if (frameCounter ==5 && getIsMoving())
         {
             frameCounter++;
             return frame7;
         }
-        if (frameCounter ==6 && getIsMoving() == true)
+        if (frameCounter ==6 && getIsMoving())
         {
             frameCounter++;
             return frame8;
@@ -165,8 +155,8 @@ public class Player
     }
     public void update(Joystick joystick)
     {
-        velocityX = joystick.getActuatorX()*MAX_SPEED;
-        velocityY = joystick.getActuatorY()*MAX_SPEED;
+        double velocityX = joystick.getActuatorX() * MAX_SPEED;
+        double velocityY = joystick.getActuatorY() * MAX_SPEED;
         posX += velocityX;
         posY += velocityY;
     }

@@ -5,8 +5,8 @@ import android.view.SurfaceHolder;
 
 public class GameLoop extends Thread
 {
-    private SurfaceHolder surfaceHolder;
-    private Game game;
+    private final SurfaceHolder surfaceHolder;
+    private final Game game;
     private boolean isRunning = false;
     private double averageUpdates;
     private double averageFrames;

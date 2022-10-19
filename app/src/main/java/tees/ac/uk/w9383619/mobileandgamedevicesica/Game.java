@@ -13,13 +13,13 @@ import androidx.core.content.ContextCompat;
 class Game extends SurfaceView implements SurfaceHolder.Callback {
     private final Player player;
     private final Joystick joystick;
-    private GameLoop gameLoop;
+    private final GameLoop gameLoop;
 
 
     public Game(Context context) {
         super(context);
 
-        //Gets surafce holder and adds the callback
+        //Gets surface holder and adds the callback
         SurfaceHolder surfaceHolder = getHolder();
         surfaceHolder.addCallback(this);
         joystick = new Joystick(250, 800, 100, 40);
@@ -36,7 +36,7 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         switch(event.getAction())
         {
             case MotionEvent.ACTION_DOWN:
-                    if(joystick.isPressed((double)event.getX(), (double)event.getY()));
+                    if(joystick.isPressed((double)event.getX(), (double)event.getY()))
             {
                 joystick.setIsPressed(true);
             }
