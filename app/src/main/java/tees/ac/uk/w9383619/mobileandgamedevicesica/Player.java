@@ -8,14 +8,14 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 
 import androidx.core.content.ContextCompat;
-
-public class Player
+//main character for the game, which is an extension of the GameObject class
+public class Player extends GameObject
 {
-    private static final double PIXELS_PER_SECOND = 200;
-    private double posX;
-    private double posY;
+    public static final double PIXELS_PER_SECOND = 200;
+
     private final Paint paint;
-    private static final double MAX_SPEED = PIXELS_PER_SECOND/GameLoop.MAX_UPDATES;
+    public static final double MAX_SPEED = PIXELS_PER_SECOND/GameLoop.MAX_UPDATES;
+    private final Joystick joystick;
     Bitmap frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8,
             idleFrame1, idleFrame2, idleFrame3, idleFrame4, idleFrame5, idleFrame6;
     int frameCounter =0;
@@ -24,10 +24,11 @@ public class Player
     public boolean idle = true;
     private long startTime;
 
-    public Player(Context context, double posX, double posY, double radius, Resources res)
+    public Player(Context context, Joystick joystick, double posX, double posY, Resources res)
     {
-        this.posX = posX;
-        this.posY = posY;
+        super(posX, posY);
+        this.joystick = joystick;
+
         startTime = System.currentTimeMillis();
 
         frame1 = BitmapFactory.decodeResource(res, R.drawable.tile000);
@@ -63,8 +64,8 @@ public class Player
         idleFrame6 = Bitmap.createScaledBitmap(idleFrame6, 192, 288, false);
 
         paint = new Paint();
-        int colour = ContextCompat.getColor(context, R.color.player);
-        paint.setColor(colour);
+        //int colour = ContextCompat.getColor(context, R.color.player);
+        //paint.setColor(colour);
     }
     public void draw(Canvas canvas)
     {
@@ -76,12 +77,11 @@ public class Player
         {
             canvas.drawBitmap(getIdleFrame(), (float) posX, (float) posY, paint);
         }
-
-
     }
+
+    //sets the idle animation for the player
     private Bitmap getIdleFrame()
     {
-
         long elapsedTime = System.currentTimeMillis() - startTime;
         if(elapsedTime >=120)
         {
@@ -111,52 +111,53 @@ public class Player
         idleFrameCounter-=4;
         return idleFrame1;
     }
+    //sets the walking animation for the player
     private Bitmap getWalkFrame()
     {
+        long elapsedTime = System.currentTimeMillis() - startTime;
+        if(elapsedTime >=120)
+        {
+            frameCounter+=1;
+            startTime = System.currentTimeMillis();
+        }
         if (frameCounter ==0 && getIsMoving())
         {
-            frameCounter++;
             return frame2;
         }
         if (frameCounter ==1 && getIsMoving())
         {
-            frameCounter++;
             return frame3;
         }
         if (frameCounter ==2 && getIsMoving())
         {
-            frameCounter++;
             return frame4;
         }
         if (frameCounter ==3 && getIsMoving())
         {
-            frameCounter++;
             return frame5;
         }
         if (frameCounter ==4 && getIsMoving())
         {
-            frameCounter++;
             return frame6;
         }
         if (frameCounter ==5 && getIsMoving())
         {
-            frameCounter++;
             return frame7;
         }
         if (frameCounter ==6 && getIsMoving())
         {
-            frameCounter++;
             return frame8;
         }
         frameCounter-=6;
         return frame1;
-
-
     }
-    public void update(Joystick joystick)
+
+    public void update()
     {
-        double velocityX = joystick.getActuatorX() * MAX_SPEED;
-        double velocityY = joystick.getActuatorY() * MAX_SPEED;
+        //updates velocity based on joystick inputs
+        velocityX = joystick.getActuatorX() * MAX_SPEED;
+        velocityY = joystick.getActuatorY() * MAX_SPEED;
+        //updates player position
         posX += velocityX;
         posY += velocityY;
     }
