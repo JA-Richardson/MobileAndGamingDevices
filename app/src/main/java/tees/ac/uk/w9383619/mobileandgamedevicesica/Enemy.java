@@ -10,6 +10,9 @@ import android.graphics.Paint;
 public class Enemy extends GameObject{
     private static final double PIXELS_PER_SECOND = Player.PIXELS_PER_SECOND*0.6;
     private static final double MAX_SPEED = PIXELS_PER_SECOND/GameLoop.MAX_UPDATES;
+    private static final double SPAWNS_PER_MINUTE = 2;
+    private static final double UPDATES_PER_SPAWN = GameLoop.MAX_UPDATES / SPAWNS_PER_MINUTE;
+    private static double updatesUntilNextSpawn = UPDATES_PER_SPAWN;
     private final Player player;
     Bitmap frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8;
     private long startTime;
@@ -39,6 +42,18 @@ public class Enemy extends GameObject{
         frame8 = Bitmap.createScaledBitmap(frame8, 320, 220, false);
         
         
+    }
+
+    public static boolean spawnReady() {
+        if (updatesUntilNextSpawn <=0)
+        {
+            updatesUntilNextSpawn += UPDATES_PER_SPAWN;
+            return true;
+        }
+        else{
+            updatesUntilNextSpawn--;
+            return false;
+        }
     }
 
 

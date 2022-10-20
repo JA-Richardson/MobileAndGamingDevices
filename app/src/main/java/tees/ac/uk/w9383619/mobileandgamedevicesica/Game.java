@@ -10,11 +10,15 @@ import android.view.SurfaceView;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
+import java.util.ArrayList;
+import java.util.List;
+
 class Game extends SurfaceView implements SurfaceHolder.Callback {
     private final Player player;
     private final Joystick joystick;
     private final GameLoop gameLoop;
-    private final Enemy enemy;
+    //private final Enemy enemy;
+    private List<Enemy> enemyList = new ArrayList<Enemy>();
 
 
     public Game(Context context) {
@@ -27,7 +31,7 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         gameLoop = new GameLoop(this, surfaceHolder);
 
         player = new Player(getContext(),joystick, 500, 500, getResources());
-        enemy = new Enemy(getContext(), player, 700, 700, getResources());
+        //enemy = new Enemy(getContext(), player, 700, 700, getResources());
 
         setFocusable(true);
     }
@@ -84,7 +88,10 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         drawFrames(canvas);
         joystick.draw(canvas);
         player.draw(canvas);
-        enemy.draw(canvas);
+        for(Enemy enemy : enemyList)
+        {
+            enemy.draw(canvas);
+        }
 
     }
 
@@ -111,7 +118,14 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
     {
         joystick.update();
         player.update();
-        enemy.update();
+        //enemy.update();
+        if (Enemy.spawnReady())
+        {
+            enemyList.add(new Enemy(getContext(), player, Math.random()*1000, Math.random()*1000, getResources()));
+        }
+        for (Enemy enemy : enemyList)
+        {
+            enemy.update();
+        }
     }
 }
-
