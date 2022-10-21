@@ -16,10 +16,10 @@ public abstract class GameObject
         this.posY = posY;
     }
 
-    protected static double getDistanceBetweenObjects(GameObject object1, GameObject object2) {
+    protected static double getDistanceBetweenObjects(GameObject object1, GameObject object2)
+    {
         return Math.sqrt(Math.pow(object2.getPosX()-object1.getPosX(), 2) + Math.pow(object2.getPosY() - object1.getPosY(),2));
     }
-
 
     public abstract void draw(Canvas canvas);
 

@@ -18,7 +18,7 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
     private final Joystick joystick;
     private final GameLoop gameLoop;
     //private final Enemy enemy;
-    private List<Enemy> enemyList = new ArrayList<Enemy>();
+    private final List<Enemy> enemyList = new ArrayList<>();
 
 
     public Game(Context context) {
@@ -127,5 +127,22 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         {
             enemy.update();
         }
+        enemyList.removeIf(enemy -> isColliding(enemy, player));
     }
+
+    static double getDistanceBetweenObjects(Enemy enemy, Player player)
+    {
+        return Math.sqrt(Math.pow(enemy.getPosX()-player.getPosX(), 2) + Math.pow(enemy.getPosY() - player.getPosY(),2));
+    }
+
+    private boolean isColliding(Enemy next, Player player)
+    {
+        double distance = getDistanceBetweenObjects(next, player);
+        int collisionDistanceWidth = (player.frame1.getWidth() + next.frame1.getWidth())/4;
+        int collisionDistanceHeight = (player.frame1.getHeight() + next.frame1.getHeight())/4;
+        if (distance < collisionDistanceWidth) return true;
+        return distance < collisionDistanceHeight;
+    }
+
+
 }

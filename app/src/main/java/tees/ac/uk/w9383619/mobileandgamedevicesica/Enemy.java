@@ -14,6 +14,8 @@ public class Enemy extends GameObject{
     private static final double UPDATES_PER_SPAWN = GameLoop.MAX_UPDATES / SPAWNS_PER_MINUTE;
     private static double updatesUntilNextSpawn = UPDATES_PER_SPAWN;
     private final Player player;
+    private int spriteWidth;
+    private int spriteHeight;
     Bitmap frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8;
     private long startTime;
     private int frameCounter;
@@ -40,9 +42,15 @@ public class Enemy extends GameObject{
         frame6 = Bitmap.createScaledBitmap(frame6, 320, 220, false);
         frame7 = Bitmap.createScaledBitmap(frame7, 320, 220, false);
         frame8 = Bitmap.createScaledBitmap(frame8, 320, 220, false);
-        
+
+
         
     }
+
+
+
+
+
 
     public static boolean spawnReady() {
         if (updatesUntilNextSpawn <=0)
