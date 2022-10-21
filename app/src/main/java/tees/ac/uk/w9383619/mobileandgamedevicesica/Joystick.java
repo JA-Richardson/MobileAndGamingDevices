@@ -6,7 +6,6 @@ import android.graphics.Paint;
 
 public class Joystick
 {
-    public Object resetActuator;
     private final int outerCirclePosX;
     private final int outerCirclePosY;
     private int innerCirclePosX;

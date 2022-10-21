@@ -1,5 +1,6 @@
 package tees.ac.uk.w9383619.mobileandgamedevicesica;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -19,6 +20,7 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
     private final GameLoop gameLoop;
     //private final Enemy enemy;
     private final List<Enemy> enemyList = new ArrayList<>();
+    private int enemyCount = 0;
 
 
     public Game(Context context) {
@@ -36,6 +38,7 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         setFocusable(true);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event)
     {
@@ -119,15 +122,20 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         joystick.update();
         player.update();
         //enemy.update();
-        if (Enemy.spawnReady())
+        if (Enemy.spawnReady() && enemyCount < 5)
         {
             enemyList.add(new Enemy(getContext(), player, Math.random()*1000, Math.random()*1000, getResources()));
+            enemyCount++;
         }
         for (Enemy enemy : enemyList)
         {
             enemy.update();
         }
-        enemyList.removeIf(enemy -> isColliding(enemy, player));
+        if (enemyList.removeIf(enemy -> isColliding(enemy, player)))
+        {
+            enemyCount--;
+        }
+
     }
 
     static double getDistanceBetweenObjects(Enemy enemy, Player player)
@@ -143,6 +151,5 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         if (distance < collisionDistanceWidth) return true;
         return distance < collisionDistanceHeight;
     }
-
 
 }

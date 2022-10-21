@@ -33,6 +33,7 @@ public class GameLoop extends Thread
         start();
     }
 
+    @SuppressWarnings("BusyWait")
     @Override
     public void run()
     {

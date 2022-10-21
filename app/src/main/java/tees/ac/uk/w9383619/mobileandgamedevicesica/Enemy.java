@@ -14,13 +14,11 @@ public class Enemy extends GameObject{
     private static final double UPDATES_PER_SPAWN = GameLoop.MAX_UPDATES / SPAWNS_PER_MINUTE;
     private static double updatesUntilNextSpawn = UPDATES_PER_SPAWN;
     private final Player player;
-    private int spriteWidth;
-    private int spriteHeight;
     Bitmap frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8;
     private long startTime;
     private int frameCounter;
 
-    public Enemy(Context context, Player player, double posX, double posY, Resources res)
+    public Enemy(Context ignoredContext, Player player, double posX, double posY, Resources res)
     {
         super(posX, posY);
         this.player = player;

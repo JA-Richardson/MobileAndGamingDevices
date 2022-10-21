@@ -6,8 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-
-import androidx.core.content.ContextCompat;
 //main character for the game, which is an extension of the GameObject class
 public class Player extends GameObject
 {
@@ -24,7 +22,7 @@ public class Player extends GameObject
     public boolean idle = true;
     private long startTime;
 
-    public Player(Context context, Joystick joystick, double posX, double posY, Resources res)
+    public Player(Context ignoredContext, Joystick joystick, double posX, double posY, Resources res)
     {
         super(posX, posY);
         this.joystick = joystick;
@@ -64,8 +62,6 @@ public class Player extends GameObject
         idleFrame6 = Bitmap.createScaledBitmap(idleFrame6, 192, 288, false);
 
         paint = new Paint();
-        //int colour = ContextCompat.getColor(context, R.color.player);
-        //paint.setColor(colour);
     }
     public void draw(Canvas canvas)
     {
@@ -161,11 +157,7 @@ public class Player extends GameObject
         posX += velocityX;
         posY += velocityY;
     }
-    public void setPosition(double posX, double posY)
-    {
-        this.posX = posX;
-        this.posY = posY;
-    }
+
     public void isMoving(boolean moving) { this.moving = moving; }
     public void isIdle(boolean idle)
     {
