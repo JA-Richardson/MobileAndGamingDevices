@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.textservice.SpellCheckerInfo;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -18,8 +19,8 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
     private final Player player;
     private final Joystick joystick;
     private final GameLoop gameLoop;
-    //private final Enemy enemy;
     private final List<Enemy> enemyList = new ArrayList<>();
+    private final List<Spell> spellList = new ArrayList<Spell>();
     private int enemyCount = 0;
 
 
@@ -33,7 +34,6 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         gameLoop = new GameLoop(this, surfaceHolder);
 
         player = new Player(getContext(),joystick, 500, 500, getResources());
-        //enemy = new Enemy(getContext(), player, 700, 700, getResources());
 
         setFocusable(true);
     }
@@ -45,14 +45,22 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         switch(event.getAction())
         {
             case MotionEvent.ACTION_DOWN:
-                    if(joystick.isPressed(event.getX(), event.getY()))
-            {
-                joystick.setIsPressed(true);
-                player.isIdle(true);
-            }
+                if (joystick.getIsPressed()) //pressed before this event, so cast spell
+                {
+                    spellList.add(new Spell(getContext(), player, player.posX, player.posY, getResources()));
+                }
+                else if(joystick.isPressed(event.getX(), event.getY())) //pressed during this event so set pressed to rue
+                {
+                    joystick.setIsPressed(true);
+                    player.isIdle(true);
+                }
+                else//not previous pressed and not pressed now, cast spell
+                {
+                    spellList.add(new Spell(getContext(), player, player.posX, player.posY, getResources()));
+                }
                 return true;
             case MotionEvent.ACTION_MOVE:
-                if(joystick.getIsPressed())
+                if(joystick.getIsPressed()) //previously pressed and now being moved
                 {
                     joystick.setActuator(event.getX(), event.getY());
                     player.isIdle(false);
@@ -121,7 +129,7 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
     {
         joystick.update();
         player.update();
-        //enemy.update();
+
         if (Enemy.spawnReady() && enemyCount < 5)
         {
             enemyList.add(new Enemy(getContext(), player, Math.random()*1000, Math.random()*1000, getResources()));
@@ -134,6 +142,11 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         if (enemyList.removeIf(enemy -> isColliding(enemy, player)))
         {
             enemyCount--;
+        }
+
+        for (Spell spell     : spellList)
+        {
+            spell.update();
         }
 
     }

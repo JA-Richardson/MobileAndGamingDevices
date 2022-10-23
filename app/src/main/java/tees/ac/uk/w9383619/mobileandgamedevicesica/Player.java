@@ -45,14 +45,14 @@ public class Player extends GameObject
         idleFrame5 = BitmapFactory.decodeResource(res, R.drawable.idle5);
         idleFrame6 = BitmapFactory.decodeResource(res, R.drawable.idle6);
 
-        frame1 = Bitmap.createScaledBitmap(frame1, 192, 288, false);
-        frame2 = Bitmap.createScaledBitmap(frame2, 192, 288, false);
-        frame3 = Bitmap.createScaledBitmap(frame3, 192, 288, false);
-        frame4 = Bitmap.createScaledBitmap(frame4, 192, 288, false);
-        frame5 = Bitmap.createScaledBitmap(frame5, 192, 288, false);
-        frame6 = Bitmap.createScaledBitmap(frame6, 192, 288, false);
-        frame7 = Bitmap.createScaledBitmap(frame7, 192, 288, false);
-        frame8 = Bitmap.createScaledBitmap(frame8, 192, 288, false);
+        frame1 = Bitmap.createScaledBitmap(frame1, -192, 288, false);
+        frame2 = Bitmap.createScaledBitmap(frame2, -192, 288, false);
+        frame3 = Bitmap.createScaledBitmap(frame3, -192, 288, false);
+        frame4 = Bitmap.createScaledBitmap(frame4, -192, 288, false);
+        frame5 = Bitmap.createScaledBitmap(frame5, -192, 288, false);
+        frame6 = Bitmap.createScaledBitmap(frame6, -192, 288, false);
+        frame7 = Bitmap.createScaledBitmap(frame7, -192, 288, false);
+        frame8 = Bitmap.createScaledBitmap(frame8, -192, 288, false);
 
         idleFrame1 = Bitmap.createScaledBitmap(idleFrame1, 192, 288, false);
         idleFrame2 = Bitmap.createScaledBitmap(idleFrame2, 192, 288, false);

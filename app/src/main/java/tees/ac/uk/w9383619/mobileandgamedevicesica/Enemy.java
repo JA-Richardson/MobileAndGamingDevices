@@ -46,10 +46,6 @@ public class Enemy extends GameObject{
     }
 
 
-
-
-
-
     public static boolean spawnReady() {
         if (updatesUntilNextSpawn <=0)
         {
