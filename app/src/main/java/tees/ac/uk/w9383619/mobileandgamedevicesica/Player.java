@@ -156,6 +156,13 @@ public class Player extends GameObject
         //updates player position
         posX += velocityX;
         posY += velocityY;
+        //update direction based on velocity
+        if(velocityX !=0 || velocityY!= 0)
+        {
+            double distance = Utility.distanceBetweenPoints(0,0, velocityX, velocityY);
+            directionX = velocityX/distance;
+            directionY =velocityY/distance;
+        }
     }
 
     public void isMoving(boolean moving) { this.moving = moving; }

@@ -20,7 +20,7 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
     private final Joystick joystick;
     private final GameLoop gameLoop;
     private final List<Enemy> enemyList = new ArrayList<>();
-    private final List<Spell> spellList = new ArrayList<Spell>();
+    private final List<Spell> spellList = new ArrayList<>();
     private int enemyCount = 0;
 
 
@@ -103,7 +103,10 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         {
             enemy.draw(canvas);
         }
-
+        for(Spell spell : spellList)
+        {
+            spell.draw(canvas);
+        }
     }
 
     public void drawUpdates(Canvas canvas)
@@ -144,7 +147,7 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
             enemyCount--;
         }
 
-        for (Spell spell     : spellList)
+        for (Spell spell : spellList)
         {
             spell.update();
         }

@@ -9,6 +9,8 @@ public abstract class GameObject
     protected double posY;
     protected double velocityX;
     protected double velocityY;
+    protected double directionX;
+    protected double directionY;
 
     public GameObject(double posX, double posY)
     {
@@ -28,4 +30,12 @@ public abstract class GameObject
 
     protected double getPosX() {return posX;}
     protected double getPosY() {return posY;}
+
+    protected double getDirectionX() {
+        return directionX;
+    }
+
+    protected double getDirectionY() {
+        return directionY;
+    }
 }
