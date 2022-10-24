@@ -7,12 +7,12 @@ import android.graphics.Paint;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.textservice.SpellCheckerInfo;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 class Game extends SurfaceView implements SurfaceHolder.Callback {
@@ -128,11 +128,37 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         paint.setTextSize(50);
         canvas.drawText("Frames: " + averageFrames, 100, 200, paint);
     }
+
+    static double getDistanceBetweenObjects(Enemy enemy, Player player)
+    {
+        return Math.sqrt(Math.pow(enemy.getPosX()-player.getPosX(), 2) + Math.pow(enemy.getPosY() - player.getPosY(),2));
+    }
+    static double getDistanceBetweenObjects(Enemy enemy, Spell spell)
+    {
+        return Math.sqrt(Math.pow(enemy.getPosX()-spell.getPosX(), 2) + Math.pow(enemy.getPosY() - spell.getPosY(),2));
+    }
+    private boolean isColliding(Enemy next, Player player)
+    {
+        double distance = getDistanceBetweenObjects(next, player);
+        int collisionDistanceWidth = (player.frame1.getWidth() + next.frame1.getWidth())/4;
+        int collisionDistanceHeight = (player.frame1.getHeight() + next.frame1.getHeight())/4;
+        if (distance < collisionDistanceWidth) return true;
+        return distance < collisionDistanceHeight;
+    }
+    private boolean isSpellColliding(Enemy next, Spell spell)
+    {
+        double distance = getDistanceBetweenObjects(next, spell);
+        int collisionDistanceWidth = (spell.sprite.getWidth() + next.frame1.getWidth())/4;
+        int collisionDistanceHeight = (spell.sprite.getHeight() + next.frame1.getHeight())/4;
+        if (distance < collisionDistanceWidth) return true;
+        return distance < collisionDistanceHeight;
+    }
+
     public void update()
     {
         joystick.update();
         player.update();
-
+        //Iterator<Spell> spellIterator = spellList.iterator();
         if (Enemy.spawnReady() && enemyCount < 5)
         {
             enemyList.add(new Enemy(getContext(), player, Math.random()*1000, Math.random()*1000, getResources()));
@@ -142,30 +168,25 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         {
             enemy.update();
         }
+        for (Spell spell : spellList)
+        {
+
+            if (enemyList.removeIf(enemy -> isSpellColliding(enemy, spell)))
+            {
+                enemyCount--;
+
+            }
+
+            spell.update();
+
+
+
+
+        }
         if (enemyList.removeIf(enemy -> isColliding(enemy, player)))
         {
             enemyCount--;
         }
 
-        for (Spell spell : spellList)
-        {
-            spell.update();
-        }
-
     }
-
-    static double getDistanceBetweenObjects(Enemy enemy, Player player)
-    {
-        return Math.sqrt(Math.pow(enemy.getPosX()-player.getPosX(), 2) + Math.pow(enemy.getPosY() - player.getPosY(),2));
-    }
-
-    private boolean isColliding(Enemy next, Player player)
-    {
-        double distance = getDistanceBetweenObjects(next, player);
-        int collisionDistanceWidth = (player.frame1.getWidth() + next.frame1.getWidth())/4;
-        int collisionDistanceHeight = (player.frame1.getHeight() + next.frame1.getHeight())/4;
-        if (distance < collisionDistanceWidth) return true;
-        return distance < collisionDistanceHeight;
-    }
-
 }
