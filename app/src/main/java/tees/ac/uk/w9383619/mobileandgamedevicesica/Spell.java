@@ -8,7 +8,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 
 public class Spell extends GameObject {
-    private final Player player;
     public static final double PIXELS_PER_SECOND = 600;
     public static final double MAX_SPELL_SPEED = PIXELS_PER_SECOND/GameLoop.MAX_UPDATES;
     Bitmap sprite;
@@ -16,7 +15,6 @@ public class Spell extends GameObject {
     public Spell(Context ignoredContext, Player player, double posX, double posY, Resources res) {
         super(posX, posY);
 
-        this.player = player;
         velocityX = player.getDirectionX()*MAX_SPELL_SPEED;
         velocityY = player.getDirectionY()*MAX_SPELL_SPEED;
 

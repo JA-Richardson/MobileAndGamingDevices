@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 class Game extends SurfaceView implements SurfaceHolder.Callback {
@@ -22,6 +21,8 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
     private final List<Enemy> enemyList = new ArrayList<>();
     private final List<Spell> spellList = new ArrayList<>();
     private int enemyCount = 0;
+    private int joystickPointerID = 0;
+    private int numberOfSpellsCast = 0;
 
 
     public Game(Context context) {
@@ -42,21 +43,23 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public boolean onTouchEvent(MotionEvent event)
     {
-        switch(event.getAction())
+        switch(event.getActionMasked())
         {
             case MotionEvent.ACTION_DOWN:
+                case MotionEvent.ACTION_POINTER_DOWN:
                 if (joystick.getIsPressed()) //pressed before this event, so cast spell
                 {
-                    spellList.add(new Spell(getContext(), player, player.posX, player.posY, getResources()));
+                    numberOfSpellsCast++;
                 }
                 else if(joystick.isPressed(event.getX(), event.getY())) //pressed during this event so set pressed to rue
                 {
+                    joystickPointerID = event.getPointerId(event.getActionIndex());
                     joystick.setIsPressed(true);
                     player.isIdle(true);
                 }
                 else//not previous pressed and not pressed now, cast spell
                 {
-                    spellList.add(new Spell(getContext(), player, player.posX, player.posY, getResources()));
+                    numberOfSpellsCast++;
                 }
                 return true;
             case MotionEvent.ACTION_MOVE:
@@ -68,10 +71,15 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
                 }
                 return true;
             case MotionEvent.ACTION_UP:
-                joystick.setIsPressed(false);
-                joystick.resetActuator();
-                player.isMoving(false);
-                player.isIdle(true);
+            case MotionEvent.ACTION_POINTER_UP:
+                if(joystickPointerID == event.getPointerId((event.getActionIndex())))
+                {
+                    joystick.setIsPressed(false);
+                    joystick.resetActuator();
+                    player.isMoving(false);
+                    player.isIdle(true);
+                }
+
                 return true;
         }
         return super.onTouchEvent(event);
@@ -163,6 +171,11 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         {
             enemyList.add(new Enemy(getContext(), player, Math.random()*1000, Math.random()*1000, getResources()));
             enemyCount++;
+        }
+        while (numberOfSpellsCast > 0)
+        {
+            spellList.add(new Spell(getContext(), player, player.posX, player.posY, getResources()));
+            numberOfSpellsCast--;
         }
         for (Enemy enemy : enemyList)
         {
