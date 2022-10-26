@@ -6,10 +6,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+
 //main character for the game, which is an extension of the GameObject class
 public class Player extends GameObject
 {
     public static final double PIXELS_PER_SECOND = 200;
+    public static final int MAX_HEALTH = 100;
 
     private final Paint paint;
     public static final double MAX_SPEED = PIXELS_PER_SECOND/GameLoop.MAX_UPDATES;
@@ -21,11 +23,15 @@ public class Player extends GameObject
     public boolean moving = false;
     public boolean idle = true;
     private long startTime;
+    private final HealthBar healthBar;
+    private int currentHealth;
 
     public Player(Context ignoredContext, Joystick joystick, double posX, double posY, Resources res)
     {
         super(posX, posY);
         this.joystick = joystick;
+        this.healthBar = new HealthBar(ignoredContext, this);
+        this.currentHealth = MAX_HEALTH;
 
         startTime = System.currentTimeMillis();
 
@@ -65,6 +71,7 @@ public class Player extends GameObject
     }
     public void draw(Canvas canvas)
     {
+        healthBar.draw(canvas);
         if(getIsMoving())
         {
             canvas.drawBitmap(getWalkFrame(), (float) posX, (float) posY, paint);
@@ -175,4 +182,12 @@ public class Player extends GameObject
         return moving;
     }
     public boolean getIsIdle() { return  idle; }
+
+    public int getCurrentHealth() {
+        return currentHealth;
+    }
+
+    public void setCurrentHealth(int currentHealth) {
+        this.currentHealth = currentHealth;
+    }
 }

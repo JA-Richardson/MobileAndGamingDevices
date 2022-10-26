@@ -3,13 +3,11 @@ package tees.ac.uk.w9383619.mobileandgamedevicesica;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,8 +101,8 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
-        drawUpdates(canvas);
-        drawFrames(canvas);
+        //drawUpdates(canvas);
+        //drawFrames(canvas);
         joystick.draw(canvas);
         player.draw(canvas);
         for(Enemy enemy : enemyList)
@@ -117,7 +115,7 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
-    public void drawUpdates(Canvas canvas)
+    /*public void drawUpdates(Canvas canvas)
     {
         String averageUpdates = Double.toString(gameLoop.getAverageUpdates());
         Paint paint = new Paint();
@@ -135,7 +133,7 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         paint.setColor(colour);
         paint.setTextSize(50);
         canvas.drawText("Frames: " + averageFrames, 100, 200, paint);
-    }
+    }*/
 
     static double getDistanceBetweenObjects(Enemy enemy, Player player)
     {
@@ -183,23 +181,16 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         }
         for (Spell spell : spellList)
         {
-
             if (enemyList.removeIf(enemy -> isSpellColliding(enemy, spell)))
             {
                 enemyCount--;
-
             }
-
             spell.update();
-
-
-
-
         }
         if (enemyList.removeIf(enemy -> isColliding(enemy, player)))
         {
             enemyCount--;
+            player.setCurrentHealth(player.getCurrentHealth() -1);
         }
-
     }
 }
