@@ -9,4 +9,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="red">#FF0000</color>
     <color name="player">#9d32a8</color>
+    <color name="gameOver">#FF1100</color>
+    <color name="money">#EBBA09</color>
 </resources>

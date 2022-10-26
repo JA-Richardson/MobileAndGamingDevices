@@ -3,9 +3,11 @@ package tees.ac.uk.w9383619.mobileandgamedevicesica;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.VelocityTracker;
 
 import androidx.annotation.NonNull;
 
@@ -18,9 +20,12 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
     private final GameLoop gameLoop;
     private final List<Enemy> enemyList = new ArrayList<>();
     private final List<Spell> spellList = new ArrayList<>();
+    private final Money money  ;
     private int enemyCount = 0;
     private int joystickPointerID = 0;
     private int numberOfSpellsCast = 0;
+    private final GameOver gameOver;
+    private VelocityTracker velocityTracker = null;
 
 
     public Game(Context context) {
@@ -29,9 +34,14 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         //Gets surface holder and adds the callback
         SurfaceHolder surfaceHolder = getHolder();
         surfaceHolder.addCallback(this);
-        joystick = new Joystick(250, 800, 100, 40);
-        gameLoop = new GameLoop(this, surfaceHolder);
 
+        gameLoop = new GameLoop(this, surfaceHolder);
+        //User interface initialisation
+        joystick = new Joystick(250, 800, 100, 40);
+        gameOver = new GameOver(getContext());
+        money = new Money(getContext());
+
+        //Player initialisation
         player = new Player(getContext(),joystick, 500, 500, getResources());
 
         setFocusable(true);
@@ -44,7 +54,18 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         switch(event.getActionMasked())
         {
             case MotionEvent.ACTION_DOWN:
-                case MotionEvent.ACTION_POINTER_DOWN:
+                if(velocityTracker == null) {
+                    // Retrieve a new VelocityTracker object to watch the
+                    // velocity of a motion.
+                    velocityTracker = VelocityTracker.obtain();
+                }
+                else {
+                    // Reset the velocity tracker back to its initial state.
+                    velocityTracker.clear();
+                }
+                // Add a user's movement to the tracker.
+                velocityTracker.addMovement(event);
+            case MotionEvent.ACTION_POINTER_DOWN:
                 if (joystick.getIsPressed()) //pressed before this event, so cast spell
                 {
                     numberOfSpellsCast++;
@@ -61,14 +82,37 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
                 }
                 return true;
             case MotionEvent.ACTION_MOVE:
+                velocityTracker.addMovement(event);
+                velocityTracker.computeCurrentVelocity(1000);
+                Log.d("", "X Velocity: " + velocityTracker.getXVelocity(joystickPointerID));
+                Log.d("", "Y Velocity: " + velocityTracker.getYVelocity(joystickPointerID));
+               /* if(velocityTracker.getXVelocity() > 1000)
+                {
+                    //player.dodgeRight();
+                }
+                if(velocityTracker.getXVelocity() < 1000)
+                {
+                    //player.dodgeLeft();
+                }*/
+                if(velocityTracker.getYVelocity() > 1500)
+                {
+                    player.dodgeDown();
+                }
+                if(velocityTracker.getYVelocity() < 1500)
+                {
+                    player.dodgeUp();
+                }
+
                 if(joystick.getIsPressed()) //previously pressed and now being moved
                 {
                     joystick.setActuator(event.getX(), event.getY());
                     player.isIdle(false);
                     player.isMoving(true);
+
                 }
                 return true;
             case MotionEvent.ACTION_UP:
+                //velocityTracker.recycle();
             case MotionEvent.ACTION_POINTER_UP:
                 if(joystickPointerID == event.getPointerId((event.getActionIndex())))
                 {
@@ -77,8 +121,11 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
                     player.isMoving(false);
                     player.isIdle(true);
                 }
+                case MotionEvent.ACTION_CANCEL:
+                    //velocityTracker.recycle();
+                    return true;
 
-                return true;
+
         }
         return super.onTouchEvent(event);
     }
@@ -105,6 +152,7 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         //drawFrames(canvas);
         joystick.draw(canvas);
         player.draw(canvas);
+        money.draw(canvas);
         for(Enemy enemy : enemyList)
         {
             enemy.draw(canvas);
@@ -112,6 +160,11 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         for(Spell spell : spellList)
         {
             spell.draw(canvas);
+        }
+
+        if(player.getCurrentHealth() <= 0)
+        {
+            gameOver.draw(canvas);
         }
     }
 
@@ -162,6 +215,8 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
 
     public void update()
     {
+        if (player.getCurrentHealth() <= 0)
+            return;
         joystick.update();
         player.update();
         //Iterator<Spell> spellIterator = spellList.iterator();
@@ -184,6 +239,7 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
             if (enemyList.removeIf(enemy -> isSpellColliding(enemy, spell)))
             {
                 enemyCount--;
+                money.currentMoney+=5;
             }
             spell.update();
         }

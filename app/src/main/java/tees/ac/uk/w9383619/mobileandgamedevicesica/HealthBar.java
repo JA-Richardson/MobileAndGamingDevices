@@ -16,8 +16,8 @@ public class HealthBar {
 
     public HealthBar(Context context, Player player) {
         this.player = player;
-        this.width = 250;
-        this.height = 25;
+        this.width = 25;
+        this.height = 250;
         this.margin = 2.5f;
 
         this.paintBorder = new Paint();
@@ -32,7 +32,7 @@ public class HealthBar {
     public void draw(Canvas canvas) {
         float x = (float) player.getPosX();
         float y = (float) player.getPosY();
-        float distanceToPlayer = 50;
+        float distanceToPlayer = -225;
 
         float healthPercent = (float) player.getCurrentHealth() / Player.MAX_HEALTH;
 
@@ -47,9 +47,11 @@ public class HealthBar {
         healthWidth = width - 2 * margin;
         healthHeight = height - 2 * margin;
         healthLeft = borderLeft + margin;
-        healthRight = healthLeft + healthWidth * healthPercent;
+        healthRight = healthLeft + healthWidth;
         healthBottom = borderBottom - margin;
-        healthTop = healthBottom - healthHeight;
+        healthTop = healthBottom - healthHeight * healthPercent;
         canvas.drawRect(healthLeft, healthTop, healthRight, healthBottom, paintFill);
+
+
     }
 }

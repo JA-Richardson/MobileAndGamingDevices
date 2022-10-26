@@ -41,8 +41,6 @@ public class Enemy extends GameObject{
         frame7 = Bitmap.createScaledBitmap(frame7, 320, 220, false);
         frame8 = Bitmap.createScaledBitmap(frame8, 320, 220, false);
 
-
-        
     }
 
 
