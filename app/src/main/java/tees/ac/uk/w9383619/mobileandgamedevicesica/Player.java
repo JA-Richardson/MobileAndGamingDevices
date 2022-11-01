@@ -25,7 +25,6 @@ public class Player extends GameObject {
     private final HealthBar healthBar;
     private int currentHealth;
     private final int currentLevel = 1;
-    private final boolean canDodge = true;
     private long dodgeCooldown = 5000;
 
     public Player(Context ignoredContext, Joystick joystick, double posX, double posY, Resources res) {
@@ -224,7 +223,7 @@ public class Player extends GameObject {
         startTime = System.currentTimeMillis();
         if (startTime - dodgeCooldown >= 5000)
         {
-            posY += 100;
+            posY += 500;
             dodgeCooldown = startTime;
         }
         else

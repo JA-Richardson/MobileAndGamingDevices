@@ -21,7 +21,7 @@ public class Experience {
 
     public void draw(Canvas canvas)
     {
-        String text = "Money: " + currentExp;
+        String text = "Exp: " + currentExp;
 
         float posX = 1500;
         float posY = 100;

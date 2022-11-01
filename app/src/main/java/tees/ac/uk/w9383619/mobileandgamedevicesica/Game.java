@@ -3,6 +3,8 @@ package tees.ac.uk.w9383619.mobileandgamedevicesica;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.hardware.SensorEvent;
+import android.hardware.SensorManager;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -26,6 +28,8 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
     private int numberOfSpellsCast = 0;
     private final GameOver gameOver;
     private VelocityTracker velocityTracker = null;
+    private SensorManager sensorManager;
+    private Sensor sensor;
 
 
     public Game(Context context) {
@@ -43,9 +47,20 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         //Player initialisation
         player = new Player(getContext(),joystick, 500, 500, getResources());
+        sensor = new tees.ac.uk.w9383619.mobileandgamedevicesica.Sensor(context);
 
         setFocusable(true);
     }
+
+
+    public void onSensorChanged(SensorEvent event){
+        // In this example, alpha is calculated as t / (t + dT),
+        // where t is the low-pass filter's time-constant and
+        // dT is the event delivery rate.
+
+        Log.d("", "Accel: " + sensor);
+    }
+
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -86,19 +101,19 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
                 velocityTracker.computeCurrentVelocity(1000);
                 Log.d("", "X Velocity: " + velocityTracker.getXVelocity(joystickPointerID));
                 Log.d("", "Y Velocity: " + velocityTracker.getYVelocity(joystickPointerID));
-               /* if(velocityTracker.getXVelocity() > 1000)
+                if(velocityTracker.getXVelocity() > 2500)
                 {
-                    //player.dodgeRight();
+                    player.dodgeRight();
                 }
-                if(velocityTracker.getXVelocity() < 1000)
+                if(velocityTracker.getXVelocity() < -2500)
                 {
-                    //player.dodgeLeft();
-                }*/
-                if(velocityTracker.getYVelocity() > 1500)
+                    player.dodgeLeft();
+                }
+                if(velocityTracker.getYVelocity() > 2500)
                 {
                     player.dodgeDown();
                 }
-                if(velocityTracker.getYVelocity() < 1500)
+                if(velocityTracker.getYVelocity() < -2500)
                 {
                     player.dodgeUp();
                 }
