@@ -58,7 +58,7 @@ public class Enemy extends GameObject{
 
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(Canvas canvas, GameDisplay gameDisplay) {
         canvas.drawBitmap(getFrame(), (float) posX, (float) posY, new Paint());
 
     }

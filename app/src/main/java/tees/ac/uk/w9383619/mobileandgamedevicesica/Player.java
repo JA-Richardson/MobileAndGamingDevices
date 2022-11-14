@@ -70,12 +70,12 @@ public class Player extends GameObject {
         paint = new Paint();
     }
 
-    public void draw(Canvas canvas) {
-        healthBar.draw(canvas);
+    public void draw(Canvas canvas, GameDisplay gameDisplay) {
+        healthBar.draw(canvas, gameDisplay);
         if (getIsMoving()) {
-            canvas.drawBitmap(getWalkFrame(), (float) posX, (float) posY, paint);
+            canvas.drawBitmap(getWalkFrame(), (float) gameDisplay.displayCoordsX((float) posX), (float) gameDisplay.displayCoordsY((float) posY), paint);
         } else {
-            canvas.drawBitmap(getIdleFrame(), (float) posX, (float) posY, paint);
+            canvas.drawBitmap(getIdleFrame(), (float)gameDisplay.displayCoordsX((float) posX), (float) gameDisplay.displayCoordsY((float) posY), paint);
         }
     }
 

@@ -24,9 +24,9 @@ public class Spell extends GameObject {
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(Canvas canvas, GameDisplay gameDisplay) {
 
-        canvas.drawBitmap(sprite, (float) posX, (float) posY + 250, new Paint());
+        canvas.drawBitmap(sprite, (float) gameDisplay.displayCoordsX((float) posX), (float) gameDisplay.displayCoordsY((float) posY+250), new Paint());
 
     }
 

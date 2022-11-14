@@ -47,9 +47,9 @@ public class Sensor implements SensorEventListener {
             ay=linear_acceleration[1];
             az=linear_acceleration[2];
         }
-        Log.d("", "X accel: " + ax);
+        /*Log.d("", "X accel: " + ax);
         Log.d("", "Y accel: " + ay);
-        Log.d("", "Z accel: " + az);
+        Log.d("", "Z accel: " + az);*/
 
     }
 

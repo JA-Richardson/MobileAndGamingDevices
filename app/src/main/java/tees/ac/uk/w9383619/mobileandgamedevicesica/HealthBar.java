@@ -29,7 +29,7 @@ public class HealthBar {
         paintFill.setColor(fillColor);
     }
 
-    public void draw(Canvas canvas) {
+    public void draw(Canvas canvas, GameDisplay gameDisplay) {
         float x = (float) player.getPosX();
         float y = (float) player.getPosY();
         float distanceToPlayer = -225;
@@ -41,7 +41,7 @@ public class HealthBar {
         borderRight = x + width / 2;
         borderBottom = y - distanceToPlayer;
         borderTop = borderBottom - height;
-        canvas.drawRect(borderLeft, borderTop, borderRight, borderBottom, paintBorder);
+        canvas.drawRect((Float) gameDisplay.displayCoordsX(borderLeft), (Float) gameDisplay.displayCoordsY(borderTop), (Float) gameDisplay.displayCoordsX(borderRight), (Float) gameDisplay.displayCoordsY(borderBottom), paintBorder);
 
         float healthLeft, healthTop, healthRight, healthBottom, healthWidth, healthHeight;
         healthWidth = width - 2 * margin;
@@ -50,7 +50,7 @@ public class HealthBar {
         healthRight = healthLeft + healthWidth;
         healthBottom = borderBottom - margin;
         healthTop = healthBottom - healthHeight * healthPercent;
-        canvas.drawRect(healthLeft, healthTop, healthRight, healthBottom, paintFill);
+        canvas.drawRect((Float) gameDisplay.displayCoordsX(healthLeft), (Float) gameDisplay.displayCoordsY(healthTop), (Float) gameDisplay.displayCoordsX(healthRight), (Float) gameDisplay.displayCoordsY(healthBottom), paintFill);
 
 
     }

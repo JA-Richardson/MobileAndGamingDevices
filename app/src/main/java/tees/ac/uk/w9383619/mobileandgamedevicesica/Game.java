@@ -1,11 +1,14 @@
 package tees.ac.uk.w9383619.mobileandgamedevicesica;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -19,7 +22,7 @@ import java.util.List;
 class Game extends SurfaceView implements SurfaceHolder.Callback {
     private final Player player;
     private final Joystick joystick;
-    private final GameLoop gameLoop;
+    private GameLoop gameLoop;
     private final List<Enemy> enemyList = new ArrayList<>();
     private final List<Spell> spellList = new ArrayList<>();
     private final Money money  ;
@@ -30,6 +33,7 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
     private VelocityTracker velocityTracker = null;
     private SensorManager sensorManager;
     private Sensor sensor;
+    private GameDisplay gameDisplay;
 
 
     public Game(Context context) {
@@ -49,6 +53,11 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         player = new Player(getContext(),joystick, 500, 500, getResources());
         sensor = new tees.ac.uk.w9383619.mobileandgamedevicesica.Sensor(context);
 
+        //initialise gamee display and centre on player
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        gameDisplay = new GameDisplay(displayMetrics.widthPixels, displayMetrics.heightPixels, player);
+
         setFocusable(true);
     }
 
@@ -58,7 +67,7 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         // where t is the low-pass filter's time-constant and
         // dT is the event delivery rate.
 
-        Log.d("", "Accel: " + sensor);
+        //Log.d("", "Accel: " + sensor);
     }
 
 
@@ -99,8 +108,8 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
             case MotionEvent.ACTION_MOVE:
                 velocityTracker.addMovement(event);
                 velocityTracker.computeCurrentVelocity(1000);
-                Log.d("", "X Velocity: " + velocityTracker.getXVelocity(joystickPointerID));
-                Log.d("", "Y Velocity: " + velocityTracker.getYVelocity(joystickPointerID));
+                //Log.d("", "X Velocity: " + velocityTracker.getXVelocity(joystickPointerID));
+                //Log.d("", "Y Velocity: " + velocityTracker.getYVelocity(joystickPointerID));
                 if(velocityTracker.getXVelocity() > 2500)
                 {
                     player.dodgeRight();
@@ -146,8 +155,15 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     @Override
-    public void surfaceCreated(SurfaceHolder surfaceHolder) {
-    gameLoop.startLoop();
+    public void surfaceCreated(SurfaceHolder surfaceHolder)
+    {
+
+        if(gameLoop.getState().equals(Thread.State.TERMINATED))
+        {
+            gameLoop = new GameLoop(this, surfaceHolder);
+        }
+
+        gameLoop.startLoop();
     }
 
     @Override
@@ -166,15 +182,15 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         //drawUpdates(canvas);
         //drawFrames(canvas);
         joystick.draw(canvas);
-        player.draw(canvas);
+        player.draw(canvas, gameDisplay);
         money.draw(canvas);
         for(Enemy enemy : enemyList)
         {
-            enemy.draw(canvas);
+            enemy.draw(canvas, gameDisplay);
         }
         for(Spell spell : spellList)
         {
-            spell.draw(canvas);
+            spell.draw(canvas,gameDisplay);
         }
 
         if(player.getCurrentHealth() <= 0)
@@ -263,5 +279,10 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
             enemyCount--;
             player.setCurrentHealth(player.getCurrentHealth() -1);
         }
+        gameDisplay.update();
+    }
+
+    public void pause() {
+        gameLoop.stopLoop();
     }
 }

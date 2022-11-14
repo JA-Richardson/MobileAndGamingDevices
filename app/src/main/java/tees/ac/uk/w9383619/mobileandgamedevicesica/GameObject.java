@@ -23,7 +23,7 @@ public abstract class GameObject
         return Math.sqrt(Math.pow(object2.getPosX()-object1.getPosX(), 2) + Math.pow(object2.getPosY() - object1.getPosY(),2));
     }
 
-    public abstract void draw(Canvas canvas);
+    public abstract void draw(Canvas canvas, GameDisplay gameDisplay);
 
     public abstract void update();
 
