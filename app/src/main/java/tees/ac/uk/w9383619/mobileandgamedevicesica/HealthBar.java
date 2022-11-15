@@ -41,7 +41,7 @@ public class HealthBar {
         borderRight = x + width / 2;
         borderBottom = y - distanceToPlayer;
         borderTop = borderBottom - height;
-        canvas.drawRect((Float) gameDisplay.displayCoordsX(borderLeft), (Float) gameDisplay.displayCoordsY(borderTop), (Float) gameDisplay.displayCoordsX(borderRight), (Float) gameDisplay.displayCoordsY(borderBottom), paintBorder);
+        canvas.drawRect((float) gameDisplay.displayCoordsX(borderLeft), (float) gameDisplay.displayCoordsY(borderTop), (float) gameDisplay.displayCoordsX(borderRight), (float) gameDisplay.displayCoordsY(borderBottom), paintBorder);
 
         float healthLeft, healthTop, healthRight, healthBottom, healthWidth, healthHeight;
         healthWidth = width - 2 * margin;
@@ -50,7 +50,7 @@ public class HealthBar {
         healthRight = healthLeft + healthWidth;
         healthBottom = borderBottom - margin;
         healthTop = healthBottom - healthHeight * healthPercent;
-        canvas.drawRect((Float) gameDisplay.displayCoordsX(healthLeft), (Float) gameDisplay.displayCoordsY(healthTop), (Float) gameDisplay.displayCoordsX(healthRight), (Float) gameDisplay.displayCoordsY(healthBottom), paintFill);
+        canvas.drawRect((float) gameDisplay.displayCoordsX(healthLeft), (float) gameDisplay.displayCoordsY(healthTop), (float) gameDisplay.displayCoordsX(healthRight), (float) gameDisplay.displayCoordsY(healthBottom), paintFill);
 
 
     }

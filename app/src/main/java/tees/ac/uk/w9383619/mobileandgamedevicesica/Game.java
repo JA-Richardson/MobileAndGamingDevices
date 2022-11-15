@@ -38,7 +38,8 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
 
     public Game(Context context) {
         super(context);
-
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         //Gets surface holder and adds the callback
         SurfaceHolder surfaceHolder = getHolder();
         surfaceHolder.addCallback(this);
@@ -50,12 +51,12 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         money = new Money(getContext());
 
         //Player initialisation
-        player = new Player(getContext(),joystick, 500, 500, getResources());
+        SpriteSheet spriteSheet = new SpriteSheet(context);
+        player = new Player(getContext(),joystick, displayMetrics.widthPixels/2, displayMetrics.heightPixels/2, getResources(), spriteSheet.getPlayer());
         sensor = new tees.ac.uk.w9383619.mobileandgamedevicesica.Sensor(context);
 
         //initialise gamee display and centre on player
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+
         gameDisplay = new GameDisplay(displayMetrics.widthPixels, displayMetrics.heightPixels, player);
 
         setFocusable(true);

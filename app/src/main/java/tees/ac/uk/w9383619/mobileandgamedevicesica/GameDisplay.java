@@ -1,35 +1,35 @@
 package tees.ac.uk.w9383619.mobileandgamedevicesica;
 
 public class GameDisplay {
-    private float offsetX;
-    private float offsetY;
-    private float displayCentreX;
-    private float displayCentreY;
-    private float gameCentreX;
-    private float gameCentreY;
+    private double offsetX;
+    private double offsetY;
+    private double displayCentreX;
+    private double displayCentreY;
+    private double gameCentreX;
+    private double gameCentreY;
     private GameObject centreObject;
 
     public GameDisplay(int width, int height, GameObject centreObject)
     {
         this.centreObject = centreObject;
-        displayCentreX = width/2.0f;
-        displayCentreY = height/2.0f;
+        displayCentreX = width/2.0;
+        displayCentreY = height/2.0;
     }
 
     public void update()
     {
-        gameCentreX = (float) centreObject.getPosX();
-        gameCentreY = (float) centreObject.getPosY();
+        gameCentreX = centreObject.getPosX();
+        gameCentreY = centreObject.getPosY();
 
         offsetX = displayCentreX - gameCentreX;
         offsetY = displayCentreY - gameCentreY;
     }
 
-    public Object displayCoordsX(float   X) {
+    public double displayCoordsX(double X) {
         return X + offsetX;
     }
 
-    public Object displayCoordsY(float Y) {
+    public double displayCoordsY(double Y) {
         return Y + offsetY;
     }
 }

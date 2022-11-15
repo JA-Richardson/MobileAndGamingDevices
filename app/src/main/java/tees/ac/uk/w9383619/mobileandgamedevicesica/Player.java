@@ -26,12 +26,14 @@ public class Player extends GameObject {
     private int currentHealth;
     private final int currentLevel = 1;
     private long dodgeCooldown = 5000;
+    private Sprite sprite;
 
-    public Player(Context ignoredContext, Joystick joystick, double posX, double posY, Resources res) {
+    public Player(Context ignoredContext, Joystick joystick, double posX, double posY, Resources res, Sprite sprite) {
         super(posX, posY);
         this.joystick = joystick;
         this.healthBar = new HealthBar(ignoredContext, this);
         this.currentHealth = MAX_HEALTH;
+        this.sprite = sprite;
 
         startTime = System.currentTimeMillis();
 
@@ -71,12 +73,8 @@ public class Player extends GameObject {
     }
 
     public void draw(Canvas canvas, GameDisplay gameDisplay) {
-        healthBar.draw(canvas, gameDisplay);
-        if (getIsMoving()) {
-            canvas.drawBitmap(getWalkFrame(), (float) gameDisplay.displayCoordsX((float) posX), (float) gameDisplay.displayCoordsY((float) posY), paint);
-        } else {
-            canvas.drawBitmap(getIdleFrame(), (float)gameDisplay.displayCoordsX((float) posX), (float) gameDisplay.displayCoordsY((float) posY), paint);
-        }
+        sprite.draw(canvas, (int)gameDisplay.displayCoordsX(posX)-sprite.getWidth/2, (int)gameDisplay.displayCoordsY(posY)-sprite.getHeight/2);
+        //healthBar.draw(canvas, gameDisplay);
     }
 
     //sets the idle animation for the player
