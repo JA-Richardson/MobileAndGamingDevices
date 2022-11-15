@@ -2,9 +2,12 @@ package tees.ac.uk.w9383619.mobileandgamedevicesica;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -30,6 +33,7 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
     private VelocityTracker velocityTracker = null;
     private SensorManager sensorManager;
     private Sensor sensor;
+    public Bitmap bg;
 
 
     public Game(Context context) {
@@ -38,7 +42,7 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         //Gets surface holder and adds the callback
         SurfaceHolder surfaceHolder = getHolder();
         surfaceHolder.addCallback(this);
-
+        DisplayMetrics dm = context.getResources().getDisplayMetrics();
         gameLoop = new GameLoop(this, surfaceHolder);
         //User interface initialisation
         joystick = new Joystick(250, 800, 100, 40);
@@ -48,6 +52,10 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         //Player initialisation
         player = new Player(getContext(),joystick, 500, 500, getResources());
         sensor = new tees.ac.uk.w9383619.mobileandgamedevicesica.Sensor(context);
+
+        bg = BitmapFactory.decodeResource(getResources(), R.drawable.pixelbg);
+        bg = Bitmap.createScaledBitmap(bg, dm.widthPixels, dm.heightPixels, false);
+        //bg = Bitmap.createBitmap (bg, 0,0,1950,1300);
 
         setFocusable(true);
     }
@@ -163,6 +171,9 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
+
+        canvas.drawBitmap(bg,0, 0, null);
+
         //drawUpdates(canvas);
         //drawFrames(canvas);
         joystick.draw(canvas);
