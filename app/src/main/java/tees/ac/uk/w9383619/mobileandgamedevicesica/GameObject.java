@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 public abstract class GameObject
 {
 
+
     protected double posX;
     protected double posY;
     protected double velocityX;
@@ -12,8 +13,9 @@ public abstract class GameObject
     protected double directionX;
     protected double directionY;
 
-    public GameObject(double posX, double posY)
+    public GameObject( double posX, double posY)
     {
+
         this.posX = posX;
         this.posY = posY;
     }

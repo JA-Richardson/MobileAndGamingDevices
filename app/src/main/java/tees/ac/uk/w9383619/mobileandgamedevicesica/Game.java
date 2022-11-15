@@ -62,10 +62,8 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
     }
 
 
-    public void onSensorChanged(SensorEvent event){
-        // In this example, alpha is calculated as t / (t + dT),
-        // where t is the low-pass filter's time-constant and
-        // dT is the event delivery rate.
+    public void onSensorChanged(SensorEvent event)
+    {
 
         //Log.d("", "Accel: " + sensor);
     }
