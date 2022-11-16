@@ -13,11 +13,12 @@ public class SpriteSheet {
         BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
         bitmapOptions.inScaled = false;
         bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.witch_run_sheet, bitmapOptions);
+
     }
 
     public Sprite getPlayer()
     {
-        return new Sprite(this, new Rect(0, 0, 32, 12));
+        return new Sprite(this, new Rect(0, 0, 32, 48));
     }
 
     public Bitmap getBitmap() {

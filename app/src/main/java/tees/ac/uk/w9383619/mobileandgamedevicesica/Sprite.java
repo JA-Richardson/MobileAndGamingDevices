@@ -6,8 +6,7 @@ import android.graphics.Rect;
 public class Sprite {
     private final Rect rect;
     private final SpriteSheet spriteSheet;
-    public int getHeight;
-    public int getWidth;
+
 
     public Sprite(SpriteSheet spriteSheet, Rect rect)
     {
@@ -17,7 +16,7 @@ public class Sprite {
 
     public void draw(Canvas canvas, int x, int y)
     {
-        canvas.drawBitmap(spriteSheet.getBitmap(), rect, new Rect(x, y, x+getWidth, y+getHeight), null);
+        canvas.drawBitmap(spriteSheet.getBitmap(), rect, new Rect(x, y, x+getWidth(), y+getHeight()), null);
     }
 
     public int getHeight()

@@ -73,7 +73,7 @@ public class Player extends GameObject {
     }
 
     public void draw(Canvas canvas, GameDisplay gameDisplay) {
-        sprite.draw(canvas, (int)gameDisplay.displayCoordsX(posX)-sprite.getWidth/2, (int)gameDisplay.displayCoordsY(posY)-sprite.getHeight/2);
+        sprite.draw(canvas, (int)gameDisplay.displayCoordsX(posX)-sprite.getWidth(), (int)gameDisplay.displayCoordsY(posY)-sprite.getHeight());
         //healthBar.draw(canvas, gameDisplay);
     }
 

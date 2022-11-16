@@ -38,12 +38,12 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
 
     public Game(Context context) {
         super(context);
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+
         //Gets surface holder and adds the callback
         SurfaceHolder surfaceHolder = getHolder();
         surfaceHolder.addCallback(this);
-
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         gameLoop = new GameLoop(this, surfaceHolder);
         //User interface initialisation
         joystick = new Joystick(250, 800, 100, 40);
@@ -55,7 +55,7 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         player = new Player(getContext(),joystick, displayMetrics.widthPixels/2, displayMetrics.heightPixels/2, getResources(), spriteSheet.getPlayer());
         sensor = new tees.ac.uk.w9383619.mobileandgamedevicesica.Sensor(context);
 
-        //initialise gamee display and centre on player
+        //initialise game display and centre on player
 
         gameDisplay = new GameDisplay(displayMetrics.widthPixels, displayMetrics.heightPixels, player);
 
@@ -99,7 +99,7 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
                 {
                     joystickPointerID = event.getPointerId(event.getActionIndex());
                     joystick.setIsPressed(true);
-                    player.isIdle(true);
+                    //player.isIdle(true);
                 }
                 else//not previous pressed and not pressed now, cast spell
                 {
@@ -131,8 +131,8 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
                 if(joystick.getIsPressed()) //previously pressed and now being moved
                 {
                     joystick.setActuator(event.getX(), event.getY());
-                    player.isIdle(false);
-                    player.isMoving(true);
+                    //player.isIdle(false);
+                    //player.isMoving(true);
 
                 }
                 return true;
@@ -143,8 +143,8 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
                 {
                     joystick.setIsPressed(false);
                     joystick.resetActuator();
-                    player.isMoving(false);
-                    player.isIdle(true);
+                    //player.isMoving(false);
+                    //player.isIdle(true);
                 }
                 case MotionEvent.ACTION_CANCEL:
                     //velocityTracker.recycle();
@@ -249,8 +249,10 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
     {
         if (player.getCurrentHealth() <= 0)
             return;
+        gameDisplay.update();
         joystick.update();
         player.update();
+
         //Iterator<Spell> spellIterator = spellList.iterator();
         if (Enemy.spawnReady() && enemyCount < 5)
         {
@@ -280,7 +282,7 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
             enemyCount--;
             player.setCurrentHealth(player.getCurrentHealth() -1);
         }
-        gameDisplay.update();
+
     }
 
     public void pause() {
