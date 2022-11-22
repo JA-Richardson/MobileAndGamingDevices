@@ -194,26 +194,6 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
-    /*public void drawUpdates(Canvas canvas)
-    {
-        String averageUpdates = Double.toString(gameLoop.getAverageUpdates());
-        Paint paint = new Paint();
-        int colour = ContextCompat.getColor(getContext(), R.color.red);
-        paint.setColor(colour);
-        paint.setTextSize(50);
-        canvas.drawText("Updates: " + averageUpdates, 100, 100, paint);
-    }
-
-    public void drawFrames(Canvas canvas)
-    {
-        String averageFrames = Double.toString(gameLoop.getAverageFrames());
-        Paint paint = new Paint();
-        int colour = ContextCompat.getColor(getContext(), R.color.red);
-        paint.setColor(colour);
-        paint.setTextSize(50);
-        canvas.drawText("Frames: " + averageFrames, 100, 200, paint);
-    }*/
-
     static double getDistanceBetweenObjects(Enemy enemy, Player player)
     {
         return Math.sqrt(Math.pow(enemy.getPosX()-player.getPosX(), 2) + Math.pow(enemy.getPosY() - player.getPosY(),2));
@@ -245,7 +225,6 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
             return;
         joystick.update();
         player.update();
-        //Iterator<Spell> spellIterator = spellList.iterator();
         if (Enemy.spawnReady() && enemyCount < 5)
         {
             enemyList.add(new Enemy(getContext(), player, Math.random()*1000, Math.random()*1000, getResources()));

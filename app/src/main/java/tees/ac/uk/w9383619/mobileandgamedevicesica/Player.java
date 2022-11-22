@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.util.DisplayMetrics;
 
 //main character for the game, which is an extension of the GameObject class
 public class Player extends GameObject {
@@ -15,17 +16,22 @@ public class Player extends GameObject {
     private final Paint paint;
     public static final double MAX_SPEED = PIXELS_PER_SECOND / GameLoop.MAX_UPDATES;
     private final Joystick joystick;
+
     Bitmap frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8,
             idleFrame1, idleFrame2, idleFrame3, idleFrame4, idleFrame5, idleFrame6;
     int frameCounter = 0;
     int idleFrameCounter = 0;
     public boolean moving = false;
     public boolean idle = true;
+    public boolean ultActive = false;
     private long startTime;
     private final HealthBar healthBar;
     private int currentHealth;
     private final int currentLevel = 1;
     private long dodgeCooldown = 5000;
+    private long ultCooldown = 300000;
+    private int screenheight;
+    private int screenwidth;
 
     public Player(Context ignoredContext, Joystick joystick, double posX, double posY, Resources res) {
         super(posX, posY);
@@ -68,6 +74,10 @@ public class Player extends GameObject {
         idleFrame6 = Bitmap.createScaledBitmap(idleFrame6, 192, 288, false);
 
         paint = new Paint();
+
+
+
+
     }
 
     public void draw(Canvas canvas) {
@@ -77,6 +87,8 @@ public class Player extends GameObject {
         } else {
             canvas.drawBitmap(getIdleFrame(), (float) posX, (float) posY, paint);
         }
+        screenheight = canvas.getHeight();
+        screenwidth = canvas.getWidth();
     }
 
     //sets the idle animation for the player
@@ -149,6 +161,22 @@ public class Player extends GameObject {
             double distance = Utility.distanceBetweenPoints(0, 0, velocityX, velocityY);
             directionX = velocityX / distance;
             directionY = velocityY / distance;
+        }
+        if(posX <= 0)
+        {
+            posX = 0;
+        }
+        if (posX > screenwidth - 192)
+        {
+            posX = screenwidth - 192;
+        }
+        if (posY <=0)
+        {
+            posY = 0;
+        }
+        if (posY > screenheight - 288)
+        {
+            posY = screenheight - 288;
         }
     }
 
@@ -229,5 +257,18 @@ public class Player extends GameObject {
         else
             System.out.println("Dodge cooldown has: " + (5000 - (startTime - dodgeCooldown)) + "ms to go" );
 
+    }
+
+    public void ultimate()
+    {
+        startTime = System.currentTimeMillis();
+        if(startTime - ultCooldown >= 300000)
+        {
+            ultActive = true;
+            ultCooldown = startTime;
+            ultActive = false;
+        }
+        else
+            System.out.println("Ultimate cooldown has: " + (300000 - (startTime - ultCooldown))+ "ms to go");
     }
 }
