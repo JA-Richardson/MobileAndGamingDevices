@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.util.DisplayMetrics;
 
 //main character for the game, which is an extension of the GameObject class
 public class Player extends GameObject {
@@ -32,6 +31,7 @@ public class Player extends GameObject {
     private long ultCooldown = 300000;
     private int screenheight;
     private int screenwidth;
+    Bitmap[] frames = new Bitmap[8];
 
     public Player(Context ignoredContext, Joystick joystick, double posX, double posY, Resources res) {
         super(posX, posY);
@@ -57,14 +57,14 @@ public class Player extends GameObject {
         idleFrame5 = BitmapFactory.decodeResource(res, R.drawable.idle5);
         idleFrame6 = BitmapFactory.decodeResource(res, R.drawable.idle6);
 
-        frame1 = Bitmap.createScaledBitmap(frame1, 192, 288, false);
-        frame2 = Bitmap.createScaledBitmap(frame2, 192, 288, false);
-        frame3 = Bitmap.createScaledBitmap(frame3, 192, 288, false);
-        frame4 = Bitmap.createScaledBitmap(frame4, 192, 288, false);
-        frame5 = Bitmap.createScaledBitmap(frame5, 192, 288, false);
-        frame6 = Bitmap.createScaledBitmap(frame6, 192, 288, false);
-        frame7 = Bitmap.createScaledBitmap(frame7, 192, 288, false);
-        frame8 = Bitmap.createScaledBitmap(frame8, 192, 288, false);
+        frames[0] = Bitmap.createScaledBitmap(frame1, 192, 288, false);
+        frames[1] = Bitmap.createScaledBitmap(frame2, 192, 288, false);
+        frames[2] = Bitmap.createScaledBitmap(frame3, 192, 288, false);
+        frames[3] = Bitmap.createScaledBitmap(frame4, 192, 288, false);
+        frames[4] = Bitmap.createScaledBitmap(frame5, 192, 288, false);
+        frames[5] = Bitmap.createScaledBitmap(frame6, 192, 288, false);
+        frames[6] = Bitmap.createScaledBitmap(frame7, 192, 288, false);
+        frames[7] = Bitmap.createScaledBitmap(frame8, 192, 288, false);
 
         idleFrame1 = Bitmap.createScaledBitmap(idleFrame1, 192, 288, false);
         idleFrame2 = Bitmap.createScaledBitmap(idleFrame2, 192, 288, false);
@@ -74,6 +74,7 @@ public class Player extends GameObject {
         idleFrame6 = Bitmap.createScaledBitmap(idleFrame6, 192, 288, false);
 
         paint = new Paint();
+        //frames[0] = frame1;
 
 
 
@@ -120,33 +121,17 @@ public class Player extends GameObject {
     //sets the walking animation for the player
     private Bitmap getWalkFrame() {
         long elapsedTime = System.currentTimeMillis() - startTime;
-        if (elapsedTime >= 120) {
-            frameCounter += 1;
+        Bitmap walk = frames[0];
+        if (elapsedTime >= 250)
+        {
+            for (int i = 0; i < frames.length; i+=1)
+            {
+                walk = frames[i];
+
+            }
             startTime = System.currentTimeMillis();
         }
-        if (frameCounter == 0 && getIsMoving()) {
-            return frame2;
-        }
-        if (frameCounter == 1 && getIsMoving()) {
-            return frame3;
-        }
-        if (frameCounter == 2 && getIsMoving()) {
-            return frame4;
-        }
-        if (frameCounter == 3 && getIsMoving()) {
-            return frame5;
-        }
-        if (frameCounter == 4 && getIsMoving()) {
-            return frame6;
-        }
-        if (frameCounter == 5 && getIsMoving()) {
-            return frame7;
-        }
-        if (frameCounter == 6 && getIsMoving()) {
-            return frame8;
-        }
-        frameCounter -= 6;
-        return frame1;
+        return walk;
     }
 
     public void update() {
