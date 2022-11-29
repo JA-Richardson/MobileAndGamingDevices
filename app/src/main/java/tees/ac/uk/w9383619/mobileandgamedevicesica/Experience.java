@@ -33,8 +33,8 @@ public class Experience {
         canvas.drawText(text, posX, posY, paint);
     }
 
-    public void expToNextLevel()
+    /*public void expToNextLevel()
     {
         expToNextLevel = player.getCurrentLevel() * 10;
-    }
+    }*/
 }

@@ -18,20 +18,22 @@ public class Player extends GameObject {
 
     Bitmap frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8,
             idleFrame1, idleFrame2, idleFrame3, idleFrame4, idleFrame5, idleFrame6;
-    int frameCounter = 0;
-    int idleFrameCounter = 0;
+
     public boolean moving = false;
     public boolean idle = true;
     public boolean ultActive = false;
     private long startTime;
     private final HealthBar healthBar;
     private int currentHealth;
-    private final int currentLevel = 1;
+    //private final int currentLevel = 1;
     private long dodgeCooldown = 5000;
     private long ultCooldown = 300000;
     private int screenheight;
     private int screenwidth;
-    Bitmap[] frames = new Bitmap[8];
+    Bitmap[] walkFrames = new Bitmap[8];
+    Bitmap[] idleFrames = new Bitmap[6];
+    private int currentwalkframe = 0;
+    private int currentidleframe = 0;
 
     public Player(Context ignoredContext, Joystick joystick, double posX, double posY, Resources res) {
         super(posX, posY);
@@ -57,28 +59,23 @@ public class Player extends GameObject {
         idleFrame5 = BitmapFactory.decodeResource(res, R.drawable.idle5);
         idleFrame6 = BitmapFactory.decodeResource(res, R.drawable.idle6);
 
-        frames[0] = Bitmap.createScaledBitmap(frame1, 192, 288, false);
-        frames[1] = Bitmap.createScaledBitmap(frame2, 192, 288, false);
-        frames[2] = Bitmap.createScaledBitmap(frame3, 192, 288, false);
-        frames[3] = Bitmap.createScaledBitmap(frame4, 192, 288, false);
-        frames[4] = Bitmap.createScaledBitmap(frame5, 192, 288, false);
-        frames[5] = Bitmap.createScaledBitmap(frame6, 192, 288, false);
-        frames[6] = Bitmap.createScaledBitmap(frame7, 192, 288, false);
-        frames[7] = Bitmap.createScaledBitmap(frame8, 192, 288, false);
+        walkFrames[0] = Bitmap.createScaledBitmap(frame1, 192, 288, false);
+        walkFrames[1] = Bitmap.createScaledBitmap(frame2, 192, 288, false);
+        walkFrames[2] = Bitmap.createScaledBitmap(frame3, 192, 288, false);
+        walkFrames[3] = Bitmap.createScaledBitmap(frame4, 192, 288, false);
+        walkFrames[4] = Bitmap.createScaledBitmap(frame5, 192, 288, false);
+        walkFrames[5] = Bitmap.createScaledBitmap(frame6, 192, 288, false);
+        walkFrames[6] = Bitmap.createScaledBitmap(frame7, 192, 288, false);
+        walkFrames[7] = Bitmap.createScaledBitmap(frame8, 192, 288, false);
 
-        idleFrame1 = Bitmap.createScaledBitmap(idleFrame1, 192, 288, false);
-        idleFrame2 = Bitmap.createScaledBitmap(idleFrame2, 192, 288, false);
-        idleFrame3 = Bitmap.createScaledBitmap(idleFrame3, 192, 288, false);
-        idleFrame4 = Bitmap.createScaledBitmap(idleFrame4, 192, 288, false);
-        idleFrame5 = Bitmap.createScaledBitmap(idleFrame5, 192, 288, false);
-        idleFrame6 = Bitmap.createScaledBitmap(idleFrame6, 192, 288, false);
+        idleFrames[0] = Bitmap.createScaledBitmap(idleFrame1, 192, 288, false);
+        idleFrames[1] = Bitmap.createScaledBitmap(idleFrame2, 192, 288, false);
+        idleFrames[2] = Bitmap.createScaledBitmap(idleFrame3, 192, 288, false);
+        idleFrames[3] = Bitmap.createScaledBitmap(idleFrame4, 192, 288, false);
+        idleFrames[4] = Bitmap.createScaledBitmap(idleFrame5, 192, 288, false);
+        idleFrames[5] = Bitmap.createScaledBitmap(idleFrame6, 192, 288, false);
 
         paint = new Paint();
-        //frames[0] = frame1;
-
-
-
-
     }
 
     public void draw(Canvas canvas) {
@@ -93,45 +90,35 @@ public class Player extends GameObject {
     }
 
     //sets the idle animation for the player
-    private Bitmap getIdleFrame() {
+    private Bitmap getIdleFrame()
+    {
         long elapsedTime = System.currentTimeMillis() - startTime;
-        if (elapsedTime >= 120) {
-            idleFrameCounter += 1;
-            startTime = System.currentTimeMillis();
-        }
-        if (idleFrameCounter == 0 && getIsIdle()) {
-            return idleFrame2;
-        }
-        if (idleFrameCounter == 1 && getIsIdle()) {
-            return idleFrame3;
-        }
-        if (idleFrameCounter == 2 && getIsIdle()) {
-            return idleFrame4;
-        }
-        if (idleFrameCounter == 3 && getIsIdle()) {
-            return idleFrame5;
-        }
-        if (idleFrameCounter == 4 && getIsIdle()) {
-            return idleFrame6;
-        }
-        idleFrameCounter -= 4;
-        return idleFrame1;
-    }
-
-    //sets the walking animation for the player
-    private Bitmap getWalkFrame() {
-        long elapsedTime = System.currentTimeMillis() - startTime;
-        Bitmap walk = frames[0];
-        if (elapsedTime >= 250)
+        if (elapsedTime >= 120)
         {
-            for (int i = 0; i < frames.length; i+=1)
+            currentidleframe++;
+            if(currentidleframe > idleFrames.length-1)
             {
-                walk = frames[i];
-
+                currentidleframe = 0;
             }
             startTime = System.currentTimeMillis();
         }
-        return walk;
+        return idleFrames[currentidleframe];
+    }
+
+    //sets the walking animation for the player
+    private Bitmap getWalkFrame()
+    {
+        long elapsedTime = System.currentTimeMillis() - startTime;
+        if (elapsedTime >= 120)
+        {
+            currentwalkframe++;
+            if(currentwalkframe > walkFrames.length-1)
+            {
+                currentwalkframe = 0;
+            }
+            startTime = System.currentTimeMillis();
+        }
+        return walkFrames[currentwalkframe];
     }
 
     public void update() {
@@ -177,9 +164,6 @@ public class Player extends GameObject {
         return moving;
     }
 
-    public boolean getIsIdle() {
-        return idle;
-    }
 
     public int getCurrentHealth() {
         return currentHealth;
@@ -189,9 +173,9 @@ public class Player extends GameObject {
         this.currentHealth = currentHealth;
     }
 
-    public int getCurrentLevel() {
+    /*public int getCurrentLevel() {
         return currentLevel;
-    }
+    }*/
 
     public void dodgeRight()
     {
