@@ -3,4 +3,16 @@
     <string name="startButton">Start</string>
     <string name="main_menu_background">Main menu background</string>
     <string name="how_to_play">How to play</string>
+    <string name="Info_Card_Text_Story">Story: Fire clan bandits are attempting to summon their God from the ancient volcano. Defeat as many as you can to thwart their plans!</string>
+    <string name="Info_Card_Text_Controls">How to play: Move your character using your left thumb. Tap on the screen to attack. Swipe up, down, left or right to dodge in that direction. Shake the device to use your ultimate skill</string>
+    <string name="bgImage">Gradient BG for info card</string>
+    <string name="title_activity_how_to_play">HowToPlay</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 </resources>

@@ -164,7 +164,6 @@ public class Player extends GameObject {
         return moving;
     }
 
-
     public int getCurrentHealth() {
         return currentHealth;
     }
@@ -172,10 +171,6 @@ public class Player extends GameObject {
     public void setCurrentHealth(int currentHealth) {
         this.currentHealth = currentHealth;
     }
-
-    /*public int getCurrentLevel() {
-        return currentLevel;
-    }*/
 
     public void dodgeRight()
     {
