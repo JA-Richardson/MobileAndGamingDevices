@@ -254,4 +254,9 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
             player.setCurrentHealth(player.getCurrentHealth() -1);
         }
     }
+
+    public void pause()
+    {
+        gameLoop.stopLoop();
+    }
 }
