@@ -11,6 +11,7 @@ import android.graphics.Paint;
 public class Player extends GameObject {
     public static final double PIXELS_PER_SECOND = 200;
     public static final int MAX_HEALTH = 100;
+    private Sensor sensor;
 
     private final Paint paint;
     public static final double MAX_SPEED = PIXELS_PER_SECOND / GameLoop.MAX_UPDATES;
@@ -40,6 +41,7 @@ public class Player extends GameObject {
         this.joystick = joystick;
         this.healthBar = new HealthBar(ignoredContext, this);
         this.currentHealth = MAX_HEALTH;
+        sensor = new Sensor(ignoredContext);
 
         startTime = System.currentTimeMillis();
 
@@ -228,9 +230,8 @@ public class Player extends GameObject {
         startTime = System.currentTimeMillis();
         if(startTime - ultCooldown >= 300000)
         {
-            ultActive = true;
+            currentHealth = 300;
             ultCooldown = startTime;
-            ultActive = false;
         }
         else
             System.out.println("Ultimate cooldown has: " + (300000 - (startTime - ultCooldown))+ "ms to go");

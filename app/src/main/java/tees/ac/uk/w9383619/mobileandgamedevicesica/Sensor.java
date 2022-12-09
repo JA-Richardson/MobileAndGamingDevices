@@ -11,6 +11,8 @@ public class Sensor implements SensorEventListener {
     private final SensorManager sensorManager;
     private final android.hardware.Sensor sensor;
     double ax, ay, az;
+    public float charge = 0;
+    public boolean chargeFull = false;
     public Sensor(Context context)
     {
         sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
@@ -23,9 +25,7 @@ public class Sensor implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent sensorEvent)
     {
-
         final float alpha =  0.1f;
-
 
         // Isolate the force of gravity with the low-pass filter.
         float[] gravity = new float[3];
@@ -40,20 +40,35 @@ public class Sensor implements SensorEventListener {
         linear_acceleration[1] = sensorEvent.values[1] - gravity[1];
         linear_acceleration[2] = sensorEvent.values[2] - gravity[2];
 
-
         if(sensorEvent.sensor.getType()== android.hardware.Sensor.TYPE_ACCELEROMETER)
         {
             ax=linear_acceleration[0];
             ay=linear_acceleration[1];
             az=linear_acceleration[2];
         }
-        Log.d("", "X accel: " + ax);
-        Log.d("", "Y accel: " + ay);
-        Log.d("", "Z accel: " + az);
+        Log.d("sensor", "X accel: " + ax);
+        Log.d("sensor", "Y accel: " + ay);
+        Log.d("sensor", "Z accel: " + az);
+
+
+        if(ax > 0.8)
+        {
+            charge+=0.1;
+            Log.d("charge", "current charge: " + charge);
+            if(charge > 100)
+            {
+                chargeFull = true;
+            }
+        }
     }
 
     @Override
     public void onAccuracyChanged(android.hardware.Sensor sensor, int i) {
+
+    }
+
+    public void charge()
+    {
 
     }
 }
