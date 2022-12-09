@@ -253,6 +253,13 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
             enemyCount--;
             player.setCurrentHealth(player.getCurrentHealth() -1);
         }
+        if (sensor.chargeFull == true);
+        {
+            player.ultimate();
+            sensor.charge = 0;
+            sensor.chargeFull = false;
+
+        }
     }
 
     public void pause()
