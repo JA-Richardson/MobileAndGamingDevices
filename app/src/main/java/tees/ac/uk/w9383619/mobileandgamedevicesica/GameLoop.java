@@ -8,8 +8,6 @@ public class GameLoop extends Thread
     private final SurfaceHolder surfaceHolder;
     private final Game game;
     private boolean isRunning = false;
-    private double averageUpdates;
-    private double averageFrames;
     public static final double MAX_UPDATES = 1000;
     private static final double UPDATE_PERIOD = 1E3/ MAX_UPDATES;
 
@@ -18,15 +16,7 @@ public class GameLoop extends Thread
         this.surfaceHolder = surfaceHolder;
         this.game = game;
     }
-
-    public double getAverageUpdates() {
-        return averageUpdates;
-    }
-
-    public double getAverageFrames() {
-        return averageFrames;
-    }
-
+    //starts the thread the games runs
     public void startLoop()
     {
         isRunning = true;
@@ -40,7 +30,6 @@ public class GameLoop extends Thread
         super.run();
 
         int updateCount = 0;
-        int frameCount = 0;
 
         long startTime;
         long elapsedTime;
@@ -62,7 +51,6 @@ public class GameLoop extends Thread
                 }
 
                 surfaceHolder.unlockCanvasAndPost(canvas);
-                frameCount++;
             }
             catch(IllegalArgumentException e)
             {
@@ -71,6 +59,7 @@ public class GameLoop extends Thread
 
             elapsedTime = System.currentTimeMillis() - startTime;
             sleepTime = (long) (updateCount * UPDATE_PERIOD - elapsedTime);
+            //sleeps the thread if trying to update too often
             if(sleepTime > 0)
             {
                 try
@@ -82,6 +71,7 @@ public class GameLoop extends Thread
                     e.printStackTrace();
                 }
             }
+            //if thread isn't sleeping, updates the game and resets the sleep counter
             while (sleepTime < 0 && updateCount < MAX_UPDATES -1)
             {
                 game.update();
@@ -90,19 +80,17 @@ public class GameLoop extends Thread
                 sleepTime = (long) (updateCount * UPDATE_PERIOD - elapsedTime);
             }
             elapsedTime = System.currentTimeMillis() - startTime;
+
             if(elapsedTime >= 1000)
             {
-                averageUpdates = updateCount / (1E-3 * elapsedTime);
-                averageFrames = frameCount / (1E-3 * elapsedTime);
                 updateCount =0;
-                frameCount =0;
                 startTime = System.currentTimeMillis();
             }
 
 
         }
     }
-
+    //stops the thread
     public void stopLoop()
     {
         isRunning = false;

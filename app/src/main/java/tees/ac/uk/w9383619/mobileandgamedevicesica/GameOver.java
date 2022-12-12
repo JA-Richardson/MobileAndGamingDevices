@@ -29,4 +29,6 @@ public class GameOver {
         paint.setTextSize(textSize);
         canvas.drawText(text, posX, posY, paint);
     }
+
+
 }

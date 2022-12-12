@@ -50,7 +50,7 @@ public class Joystick
     {
         updateInnerPos();
     }
-
+    //updates the position of the inner circle based on movement on player
     private void updateInnerPos()
     {
         innerCirclePosX = (int) (outerCirclePosX + actuatorX*outerCircleRadius);
@@ -70,7 +70,7 @@ public class Joystick
     public boolean getIsPressed() {
         return isPressed;
     }
-
+    //calculates where the inner circle/actuator is and stores value
     public void setActuator(double touchPosX, double touchPosY) {
         double deltaX = touchPosX - outerCirclePosX;
         double deltaY = touchPosY - outerCirclePosY;

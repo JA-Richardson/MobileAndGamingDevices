@@ -1,6 +1,5 @@
 package tees.ac.uk.w9383619.mobileandgamedevicesica;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,7 +11,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(new Game(this));
         setContentView(R.layout.activity_main);
     }
 
@@ -26,8 +24,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
     @Override
     protected void onPause() {
-        game.pause();
         super.onPause();
+        game.pause();
     }
     @Override
     protected void onStop() {

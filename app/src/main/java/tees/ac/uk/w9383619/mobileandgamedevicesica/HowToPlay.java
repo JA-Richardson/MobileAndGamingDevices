@@ -1,25 +1,12 @@
 package tees.ac.uk.w9383619.mobileandgamedevicesica;
 
 import android.os.Bundle;
-
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.util.Log;
 import android.view.View;
 
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
-import tees.ac.uk.w9383619.mobileandgamedevicesica.databinding.ActivityHowToPlayBinding;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class HowToPlay extends AppCompatActivity {
-
-    private AppBarConfiguration appBarConfiguration;
-    private ActivityHowToPlayBinding binding;
 
     public HowToPlay() {
     }

@@ -35,14 +35,14 @@ public class HealthBar {
         float distanceToPlayer = -225;
 
         float healthPercent = (float) player.getCurrentHealth() / Player.MAX_HEALTH;
-
+        //border setup for health bar
         float borderLeft, borderTop, borderRight, borderBottom;
         borderLeft = x - width / 2;
         borderRight = x + width / 2;
         borderBottom = y - distanceToPlayer;
         borderTop = borderBottom - height;
         canvas.drawRect(borderLeft, borderTop, borderRight, borderBottom, paintBorder);
-
+        //health bar setup
         float healthLeft, healthTop, healthRight, healthBottom, healthWidth, healthHeight;
         healthWidth = width - 2 * margin;
         healthHeight = height - 2 * margin;

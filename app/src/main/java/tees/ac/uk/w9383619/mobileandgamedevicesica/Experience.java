@@ -1,4 +1,4 @@
-package tees.ac.uk.w9383619.mobileandgamedevicesica;
+/*package tees.ac.uk.w9383619.mobileandgamedevicesica;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -33,8 +33,8 @@ public class Experience {
         canvas.drawText(text, posX, posY, paint);
     }
 
-    /*public void expToNextLevel()
+    *//*public void expToNextLevel()
     {
         expToNextLevel = player.getCurrentLevel() * 10;
-    }*/
-}
+    }*//*
+}*/

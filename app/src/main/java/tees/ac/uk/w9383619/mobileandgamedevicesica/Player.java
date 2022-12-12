@@ -11,7 +11,7 @@ import android.graphics.Paint;
 public class Player extends GameObject {
     public static final double PIXELS_PER_SECOND = 200;
     public static final int MAX_HEALTH = 100;
-    private Sensor sensor;
+    private final Sensor sensor;
 
     private final Paint paint;
     public static final double MAX_SPEED = PIXELS_PER_SECOND / GameLoop.MAX_UPDATES;
@@ -22,7 +22,6 @@ public class Player extends GameObject {
 
     public boolean moving = false;
     public boolean idle = true;
-    public boolean ultActive = false;
     private long startTime;
     private final HealthBar healthBar;
     private int currentHealth;
@@ -35,6 +34,7 @@ public class Player extends GameObject {
     Bitmap[] idleFrames = new Bitmap[6];
     private int currentwalkframe = 0;
     private int currentidleframe = 0;
+    public int dodge = 4;
 
     public Player(Context ignoredContext, Joystick joystick, double posX, double posY, Resources res) {
         super(posX, posY);
@@ -44,7 +44,7 @@ public class Player extends GameObject {
         sensor = new Sensor(ignoredContext);
 
         startTime = System.currentTimeMillis();
-
+        //loads sprites from resrouces folder
         frame1 = BitmapFactory.decodeResource(res, R.drawable.tile000);
         frame2 = BitmapFactory.decodeResource(res, R.drawable.tile001);
         frame3 = BitmapFactory.decodeResource(res, R.drawable.tile002);
@@ -60,7 +60,7 @@ public class Player extends GameObject {
         idleFrame4 = BitmapFactory.decodeResource(res, R.drawable.idle4);
         idleFrame5 = BitmapFactory.decodeResource(res, R.drawable.idle5);
         idleFrame6 = BitmapFactory.decodeResource(res, R.drawable.idle6);
-
+        //adds the sprites to the arrays
         walkFrames[0] = Bitmap.createScaledBitmap(frame1, 192, 288, false);
         walkFrames[1] = Bitmap.createScaledBitmap(frame2, 192, 288, false);
         walkFrames[2] = Bitmap.createScaledBitmap(frame3, 192, 288, false);
@@ -79,7 +79,7 @@ public class Player extends GameObject {
 
         paint = new Paint();
     }
-
+    //if isMoving is true it displays the walking sprite, otherwise it displays the idle sprite
     public void draw(Canvas canvas) {
         healthBar.draw(canvas);
         if (getIsMoving()) {
@@ -91,7 +91,7 @@ public class Player extends GameObject {
         screenwidth = canvas.getWidth();
     }
 
-    //sets the idle animation for the player
+    //sets the idle animation for the player by incrementing the array based on a set time delay
     private Bitmap getIdleFrame()
     {
         long elapsedTime = System.currentTimeMillis() - startTime;
@@ -107,7 +107,7 @@ public class Player extends GameObject {
         return idleFrames[currentidleframe];
     }
 
-    //sets the walking animation for the player
+    //sets the walking animation for the player by incrementing the array based on a set time delay
     private Bitmap getWalkFrame()
     {
         long elapsedTime = System.currentTimeMillis() - startTime;
@@ -124,10 +124,10 @@ public class Player extends GameObject {
     }
 
     public void update() {
-        //updates velocity based on joystick inputs
+        //updates velocity based on joystick position
         velocityX = joystick.getActuatorX() * MAX_SPEED;
         velocityY = joystick.getActuatorY() * MAX_SPEED;
-        //updates player position
+        //updates player position from the values above
         posX += velocityX;
         posY += velocityY;
         //update direction based on velocity
@@ -154,6 +154,48 @@ public class Player extends GameObject {
         }
     }
 
+    //takes the int value from the dodge in game and moves the player according to the correct case
+    public void dodge()
+    {
+        if (startTime - dodgeCooldown >= 5000)
+        {
+
+            switch (dodge) {
+                case 1: //dodge right
+                    posX += 500;
+                    dodgeCooldown = startTime;
+                    break;
+                case 2: //dodge left
+                    posX -= 500;
+                    dodgeCooldown = startTime;
+                    break;
+                case 3: //dodge up
+                    posY += 500;
+                    dodgeCooldown = startTime;
+                    break;
+                case 4: //dodge down
+                    posY -= 500;
+                    dodgeCooldown = startTime;
+                    break;
+            }
+        }
+        else
+            System.out.println("Dodge cooldown has: " + (5000 - (startTime - dodgeCooldown)) + "ms to go" );
+    }
+
+    //sets players health back to max on accelerometer use
+    public void ultimate()
+    {
+        startTime = System.currentTimeMillis();
+        if(startTime - ultCooldown >= 300000)
+        {
+            currentHealth = MAX_HEALTH;
+            ultCooldown = startTime;
+            sensor.charge =0;
+        }
+        else
+            System.out.println("Ultimate cooldown has: " + (300000 - (startTime - ultCooldown))+ "ms to go");
+    }
     public void isMoving(boolean moving) {
         this.moving = moving;
     }
@@ -172,68 +214,5 @@ public class Player extends GameObject {
 
     public void setCurrentHealth(int currentHealth) {
         this.currentHealth = currentHealth;
-    }
-
-    public void dodgeRight()
-    {
-        startTime = System.currentTimeMillis();
-        if (startTime - dodgeCooldown >= 5000)
-        {
-            posX += 500;
-            dodgeCooldown = startTime;
-        }
-        else
-            System.out.println("Dodge cooldown has: " + (5000 - (startTime - dodgeCooldown)) + "ms to go" );
-
-    }
-
-    public void dodgeLeft()
-    {
-        startTime = System.currentTimeMillis();
-        if (startTime - dodgeCooldown >= 5000)
-        {
-            posX -= 500;
-            dodgeCooldown = startTime;
-        }
-        else
-            System.out.println("Dodge cooldown has: " + (5000 - (startTime - dodgeCooldown)) + "ms to go" );
-
-    }
-
-    public void dodgeUp()
-    {
-        startTime = System.currentTimeMillis();
-        if (startTime - dodgeCooldown >= 5000)
-        {
-            posY -= 500;
-            dodgeCooldown = startTime;
-        }
-        else
-            System.out.println("Dodge cooldown has: " + (5000 - (startTime - dodgeCooldown)) + "ms to go" );
-
-    }
-    public void dodgeDown()
-    {
-        startTime = System.currentTimeMillis();
-        if (startTime - dodgeCooldown >= 5000)
-        {
-            posY += 500;
-            dodgeCooldown = startTime;
-        }
-        else
-            System.out.println("Dodge cooldown has: " + (5000 - (startTime - dodgeCooldown)) + "ms to go" );
-
-    }
-
-    public void ultimate()
-    {
-        startTime = System.currentTimeMillis();
-        if(startTime - ultCooldown >= 300000)
-        {
-            currentHealth = 300;
-            ultCooldown = startTime;
-        }
-        else
-            System.out.println("Ultimate cooldown has: " + (300000 - (startTime - ultCooldown))+ "ms to go");
     }
 }

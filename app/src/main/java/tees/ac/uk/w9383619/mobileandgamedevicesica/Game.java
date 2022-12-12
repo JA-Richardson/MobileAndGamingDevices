@@ -5,8 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.hardware.SensorEvent;
-import android.hardware.SensorManager;
+import android.media.MediaPlayer;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -31,14 +30,12 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
     private int numberOfSpellsCast = 0;
     private final GameOver gameOver;
     private VelocityTracker velocityTracker = null;
-    private SensorManager sensorManager;
-    private Sensor sensor;
+    private final Sensor sensor;
     public Bitmap bg;
 
 
     public Game(Context context) {
         super(context);
-
         //Gets surface holder and adds the callback
         SurfaceHolder surfaceHolder = getHolder();
         surfaceHolder.addCallback(this);
@@ -48,25 +45,14 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         joystick = new Joystick(250, 800, 100, 40);
         gameOver = new GameOver(getContext());
         money = new Money(getContext());
-
         //Player initialisation
         player = new Player(getContext(),joystick, 500, 500, getResources());
         sensor = new tees.ac.uk.w9383619.mobileandgamedevicesica.Sensor(context);
-
+        //background initialisoon
         bg = BitmapFactory.decodeResource(getResources(), R.drawable.pixelbg);
         bg = Bitmap.createScaledBitmap(bg, dm.widthPixels, dm.heightPixels, false);
-        //bg = Bitmap.createBitmap (bg, 0,0,1950,1300);
-
         setFocusable(true);
-    }
-
-
-    public void onSensorChanged(SensorEvent event){
-        // In this example, alpha is calculated as t / (t + dT),
-        // where t is the low-pass filter's time-constant and
-        // dT is the event delivery rate.
-
-        Log.d("", "Accel: " + sensor);
+        audio();
     }
 
 
@@ -89,17 +75,17 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
                 // Add a user's movement to the tracker.
                 velocityTracker.addMovement(event);
             case MotionEvent.ACTION_POINTER_DOWN:
-                if (joystick.getIsPressed()) //pressed before this event, so cast spell
+                if (joystick.getIsPressed()) //checks if joystick is pressed and allows player to fire
                 {
                     numberOfSpellsCast++;
                 }
-                else if(joystick.isPressed(event.getX(), event.getY())) //pressed during this event so set pressed to rue
+                else if(joystick.isPressed(event.getX(), event.getY())) //sets joystick to the pressed state
                 {
                     joystickPointerID = event.getPointerId(event.getActionIndex());
                     joystick.setIsPressed(true);
                     player.isIdle(true);
                 }
-                else//not previous pressed and not pressed now, cast spell
+                else//if joystick isn't pressed, still allows player to fire
                 {
                     numberOfSpellsCast++;
                 }
@@ -111,22 +97,26 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
                 Log.d("", "Y Velocity: " + velocityTracker.getYVelocity(joystickPointerID));
                 if(velocityTracker.getXVelocity() > 2500)
                 {
-                    player.dodgeRight();
+                    player.dodge = 1;
+                    player.dodge();
                 }
                 if(velocityTracker.getXVelocity() < -2500)
                 {
-                    player.dodgeLeft();
+                    player.dodge = 2;
+                    player.dodge();
                 }
                 if(velocityTracker.getYVelocity() > 2500)
                 {
-                    player.dodgeDown();
+                    player.dodge = 3;
+                    player.dodge();
                 }
                 if(velocityTracker.getYVelocity() < -2500)
                 {
-                    player.dodgeUp();
+                    player.dodge = 4;
+                    player.dodge();
                 }
 
-                if(joystick.getIsPressed()) //previously pressed and now being moved
+                if(joystick.getIsPressed()) //checks for joystick being pressed then moves the player
                 {
                     joystick.setActuator(event.getX(), event.getY());
                     player.isIdle(false);
@@ -154,28 +144,21 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     @Override
-    public void surfaceCreated(SurfaceHolder surfaceHolder) {
-    gameLoop.startLoop();
-    }
+    public void surfaceCreated(SurfaceHolder surfaceHolder) {gameLoop.startLoop();}
 
     @Override
-    public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
-
-    }
+    public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {}
 
     @Override
-    public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
-
-    }
+    public void surfaceDestroyed(@NonNull SurfaceHolder holder) {}
 
     @Override
+    //draw function
     public void draw(Canvas canvas) {
         super.draw(canvas);
 
         canvas.drawBitmap(bg,0, 0, null);
 
-        //drawUpdates(canvas);
-        //drawFrames(canvas);
         joystick.draw(canvas);
         player.draw(canvas);
         money.draw(canvas);
@@ -191,6 +174,53 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         if(player.getCurrentHealth() <= 0)
         {
             gameOver.draw(canvas);
+
+        }
+    }
+    //update function
+    //checks if player is still alive, then checks for enemies to spawn
+    //checks if any spells are ready to be cast, then performs all the update actions, then removes spells/enemies based on hit
+    //final check is to see if the ult charge sensor is full
+    public void update()
+    {
+
+        if (player.getCurrentHealth() <= 0)
+            return;
+        joystick.update();
+        player.update();
+        if (Enemy.spawnReady() && enemyCount < 5) //allows an enemy to be spawned if the value is true and there are less than 5 alive
+        {
+            enemyList.add(new Enemy(getContext(), player, Math.random()*1000, Math.random()*1000, getResources()));
+            enemyCount++;
+        }
+        while (numberOfSpellsCast > 0)
+        {
+            spellList.add(new Spell(getContext(), player, player.posX, player.posY, getResources()));
+            numberOfSpellsCast--;
+        }
+        for (Enemy enemy : enemyList)
+        {
+            enemy.update();
+        }
+        for (Spell spell : spellList)
+        {
+            if (enemyList.removeIf(enemy -> isSpellColliding(enemy, spell)))
+            {
+                enemyCount--;
+                money.currentMoney+=5; //if enemy is killed by the player spell, adds 5 to the players gold
+            }
+            spell.update();
+        }
+        if (enemyList.removeIf(enemy -> isColliding(enemy, player)))
+        {
+            enemyCount--;
+            player.setCurrentHealth(player.getCurrentHealth() -1);
+        }
+        if (sensor.chargeFull)
+        {
+            player.ultimate();
+            sensor.charge = 0;
+            sensor.chargeFull = false;
         }
     }
 
@@ -218,57 +248,16 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         if (distance < collisionDistanceWidth) return true;
         return distance < collisionDistanceHeight;
     }
-
-    public void update()
-    {
-        if (player.getCurrentHealth() <= 0)
-            return;
-        joystick.update();
-        player.update();
-        if (Enemy.spawnReady() && enemyCount < 5)
-        {
-            enemyList.add(new Enemy(getContext(), player, Math.random()*1000, Math.random()*1000, getResources()));
-            enemyCount++;
-        }
-        while (numberOfSpellsCast > 0)
-        {
-            spellList.add(new Spell(getContext(), player, player.posX, player.posY, getResources()));
-            numberOfSpellsCast--;
-        }
-        for (Enemy enemy : enemyList)
-        {
-            enemy.update();
-        }
-        for (Spell spell : spellList)
-        {
-            if (enemyList.removeIf(enemy -> isSpellColliding(enemy, spell)))
-            {
-                enemyCount--;
-                money.currentMoney+=5;
-            }
-            spell.update();
-        }
-        if (enemyList.removeIf(enemy -> isColliding(enemy, player)))
-        {
-            enemyCount--;
-            player.setCurrentHealth(player.getCurrentHealth() -1);
-        }
-        if (sensor.chargeFull == true);
-        {
-            player.ultimate();
-            sensor.charge = 0;
-            sensor.chargeFull = false;
-
-        }
-    }
-
     public void pause()
     {
         gameLoop.stopLoop();
     }
-
-    public void pause()
+    //loads and starts the bgm during gameplay
+    public void audio()
     {
-        gameLoop.stopLoop();
+         MediaPlayer mediaPlayer = MediaPlayer.create(getContext(), R.raw.vilegrove);
+        mediaPlayer.start();
     }
+
+
 }

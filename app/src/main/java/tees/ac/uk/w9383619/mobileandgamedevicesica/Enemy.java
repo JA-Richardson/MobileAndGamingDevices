@@ -16,13 +16,14 @@ public class Enemy extends GameObject{
     private final Player player;
     Bitmap frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8;
     private long startTime;
-    private int frameCounter;
+    Bitmap[] frames = new Bitmap[8];
+    private int currentFrame = 0;
 
     public Enemy(Context ignoredContext, Player player, double posX, double posY, Resources res)
     {
         super(posX, posY);
         this.player = player;
-
+        //loads sprites from resources folder
         frame1 = BitmapFactory.decodeResource(res, R.drawable.warrior_run_1);
         frame2 = BitmapFactory.decodeResource(res, R.drawable.warrior_run_2);
         frame3 = BitmapFactory.decodeResource(res, R.drawable.warrior_run_3);
@@ -31,77 +32,22 @@ public class Enemy extends GameObject{
         frame6 = BitmapFactory.decodeResource(res, R.drawable.warrior_run_6);
         frame7 = BitmapFactory.decodeResource(res, R.drawable.warrior_run_7);
         frame8 = BitmapFactory.decodeResource(res, R.drawable.warrior_run_8);
-
-        frame1 = Bitmap.createScaledBitmap(frame1, 320, 220, false);
-        frame2 = Bitmap.createScaledBitmap(frame2, 320, 220, false);
-        frame3 = Bitmap.createScaledBitmap(frame3, 320, 220, false);
-        frame4 = Bitmap.createScaledBitmap(frame4, 320, 220, false);
-        frame5 = Bitmap.createScaledBitmap(frame5, 320, 220, false);
-        frame6 = Bitmap.createScaledBitmap(frame6, 320, 220, false);
-        frame7 = Bitmap.createScaledBitmap(frame7, 320, 220, false);
-        frame8 = Bitmap.createScaledBitmap(frame8, 320, 220, false);
+        //loads the sprites into the array
+        frames[0] = Bitmap.createScaledBitmap(frame1, 320, 220, false);
+        frames[1] = Bitmap.createScaledBitmap(frame2, 320, 220, false);
+        frames[2] = Bitmap.createScaledBitmap(frame3, 320, 220, false);
+        frames[3] = Bitmap.createScaledBitmap(frame4, 320, 220, false);
+        frames[4] = Bitmap.createScaledBitmap(frame5, 320, 220, false);
+        frames[5] = Bitmap.createScaledBitmap(frame6, 320, 220, false);
+        frames[6] = Bitmap.createScaledBitmap(frame7, 320, 220, false);
+        frames[7] = Bitmap.createScaledBitmap(frame8, 320, 220, false);
 
     }
-
-
-    public static boolean spawnReady() {
-        if (updatesUntilNextSpawn <=0)
-        {
-            updatesUntilNextSpawn += UPDATES_PER_SPAWN;
-            return true;
-        }
-        else{
-            updatesUntilNextSpawn--;
-            return false;
-        }
-    }
-
-
     @Override
     public void draw(Canvas canvas) {
         canvas.drawBitmap(getFrame(), (float) posX, (float) posY, new Paint());
 
     }
-
-    private Bitmap getFrame() {
-        long elapsedTime = System.currentTimeMillis() - startTime;
-        if(elapsedTime >=120)
-        {
-            frameCounter+=1;
-            startTime = System.currentTimeMillis();
-        }
-        if (frameCounter ==0)
-        {
-            return frame2;
-        }
-        if (frameCounter ==1)
-        {
-            return frame3;
-        }
-        if (frameCounter ==2)
-        {
-            return frame4;
-        }
-        if (frameCounter ==3)
-        {
-            return frame5;
-        }
-        if (frameCounter ==4)
-        {
-            return frame6;
-        }
-        if (frameCounter ==5)
-        {
-            return frame7;
-        }
-        if (frameCounter ==6)
-        {
-            return frame8;
-        }
-        frameCounter-=6;
-        return frame1;
-    }
-
     @Override
     public void update() {
         //calc vector from enemy to player
@@ -119,4 +65,34 @@ public class Enemy extends GameObject{
         posX += velocityX;
         posY += velocityY;
     }
+
+    //restricts enemy spawning based on the game updates and the amount of spawns allowed per minute
+    public static boolean spawnReady() {
+        if (updatesUntilNextSpawn <=0)//if value is below 0 it allows an enemy to spawn
+        {
+            updatesUntilNextSpawn += UPDATES_PER_SPAWN;
+            return true;
+        }
+        else//ticks down if the value is above 0
+        {
+            updatesUntilNextSpawn--;
+            return false;
+        }
+    }
+    //returns correct frame for animating the enemy
+    private Bitmap getFrame() {
+        long elapsedTime = System.currentTimeMillis() - startTime;
+        if(elapsedTime >=120)
+        {
+            currentFrame++;
+            if(currentFrame > frames.length -1)
+            {
+                currentFrame = 0;
+            }
+            startTime = System.currentTimeMillis();
+        }
+        return frames[currentFrame];
+    }
+
+
 }
